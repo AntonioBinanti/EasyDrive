@@ -31,8 +31,50 @@ public class EasyDrive {
 		return easyDrive;
 	}
 	
+	public void addCliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono, String email, String indirizzo) {
+		Cliente c = new Cliente(codiceFiscale, nome, cognome, dataNascita, numeroTelefono, email, indirizzo);
+		this.listaClienti.put(codiceFiscale, c);
+		System.out.println("Cliente "+ c.getNome() + " " + c.getCognome() + " inserito correttamente");
+	}
+	
+	public Cliente getCliente(String codiceFiscale) {
+		Cliente c = this.listaClienti.get(codiceFiscale);
+		if(c == null) {
+			System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
+			return null;
+		}else {
+		return c;
+		}
+	}
+	
+	public void removeCliente(String codiceFiscale) {
+		this.listaClienti.remove(codiceFiscale);
+	}
+	
+	public void addLezione(Date data, Time ora, Argomento argomentoTrattato) {
+		Lezione l = new Lezione(data, ora, argomentoTrattato);
+		this.elencoLezioni.put(l.getCodice(), l);
+		System.out.println("Lezione inserita correttamente in data: " + l.getData().toString() + " e ora: " + l.getOra().toString());
+	}
+	
+	public Lezione getLezione(Date data, Time ora) {
+		String dataOra = data.toString() + ora.toString();
+		Lezione l = this.elencoLezioni.get(dataOra);
+		if(l == null) {
+			System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
+			return null;
+		}else {
+		return l;
+		}
+	}
+	
+	public void removeLezione(Date data, Time ora) {
+		String dataOra = data.toString() + ora.toString();
+		this.elencoLezioni.remove(dataOra);
+	}
+	
 	public void aggiornaFrequenzaClienti(Date data, Time ora) {
-		String dataOra = data.toString()+ora.toString();
+		String dataOra = data.toString() + ora.toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		lezioneCorrente = l;
 	}

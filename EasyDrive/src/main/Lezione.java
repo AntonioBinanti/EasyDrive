@@ -10,12 +10,12 @@ public class Lezione {
 	private Time ora;
 	private Argomento argomentoTrattato;
 	
-	public Lezione(String codice, Date data, Time ora, Argomento argomentoTrattato) {
-		super();
-		this.codice = codice;
+	public Lezione(Date data, Time ora, Argomento argomentoTrattato) {
+		super();		
 		this.data = data;
 		this.ora = ora;
 		this.argomentoTrattato = argomentoTrattato;
+		this.codice = this.data.toString() + this.ora.toString();
 	}
 
 	public String getCodice() {
