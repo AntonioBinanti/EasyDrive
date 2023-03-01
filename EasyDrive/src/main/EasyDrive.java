@@ -121,6 +121,10 @@ public class EasyDrive {
 		return elencoLezioni;
 	}
 
+	public void setLezioneCorrente(Lezione lezioneCorrente) {
+		this.lezioneCorrente = lezioneCorrente;
+	}	
+
 	public Lezione getLezioneCorrente() {
 		return lezioneCorrente;
 	}
@@ -132,7 +136,11 @@ public class EasyDrive {
 	public Map<String, Cliente> getListaClienti() {
 		return listaClienti;
 	}
-
+	
+	public void setClienteCorrente(Cliente clienteCorrente) {
+		this.clienteCorrente = clienteCorrente;
+	}
+	
 	public Cliente getClienteCorrente() {
 		return clienteCorrente;
 	}

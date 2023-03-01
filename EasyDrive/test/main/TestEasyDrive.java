@@ -11,6 +11,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert.*;
 
 public class TestEasyDrive {
@@ -21,6 +22,11 @@ public class TestEasyDrive {
 	public static void initTest() {
 		easyDrive = EasyDrive.getInstance();
     }
+	
+	@After
+	public void clearTest() {
+		easyDrive.setClienteCorrente(null);
+	}
 	
 	@Test
 	public void testAddCliente() {
@@ -55,5 +61,54 @@ public class TestEasyDrive {
 		assertNull(easyDrive.getLezione(Date.valueOf("2013-3-5"), Time.valueOf("13:45:00")));
 		/*Lezione l1 = easyDrive.getLezione(Date.valueOf("2013-3-5"), Time.valueOf("13:45:00"));
 		System.out.println("Lezione selezionata= " + l1.toString());*/
+	}
+	
+	@Test
+	public void testAggiornaFrequenzaClienti() {
+		easyDrive.addLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"), easyDrive.getListaArgomenti().get(0));
+		//La lezione selezionata diventa corrente in easyDrive
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"));
+		assertNull(easyDrive.getLezioneCorrente());
+	}
+	
+	@Test
+	public void testInserisciClienteFrequentante() {
+		easyDrive.addLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"), easyDrive.getListaArgomenti().get(0));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		//Il cliente selezionato diventa corrente se esiste una lezione corrente
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"));
+		assertNotNull(easyDrive.getLezioneCorrente());
+		easyDrive.inserisciClienteFrequentante("AR202051");
+		assertNotNull(easyDrive.getClienteCorrente());
+		//Il cliente selezionato non diventa corrente se non esiste una lezione corrente
+		easyDrive.setClienteCorrente(null);
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-3-1"), Time.valueOf("20:52:00"));
+		assertNull(easyDrive.getLezioneCorrente());
+		easyDrive.inserisciClienteFrequentante("AR202051");
+		assertNull(easyDrive.getClienteCorrente());
+	}
+	
+	@Test
+	public void testConfermaInserimento() {
+		easyDrive.addLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"), easyDrive.getListaArgomenti().get(0));
+		easyDrive.addLezione(Date.valueOf("2023-3-5"), Time.valueOf("13:45:00"), easyDrive.getListaArgomenti().get(1));
+		easyDrive.addLezione(Date.valueOf("2023-3-14"), Time.valueOf("18:00:00"), easyDrive.getListaArgomenti().get(2));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		//Selezionando una lezione e un cliente corretti si aggiorna la frequenza se clienteCorrente non ha già seguito lezioneCorrente
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"));
+		easyDrive.inserisciClienteFrequentante("AR202051");
+		easyDrive.confermaInserimento();
+		System.out.println(easyDrive.getClienteCorrente().getFrequenzaLezioni());
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-3-14"), Time.valueOf("18:00:00"));
+		easyDrive.inserisciClienteFrequentante("AR202051");
+		easyDrive.confermaInserimento();
+		System.out.println(easyDrive.getClienteCorrente().getFrequenzaLezioni());
+		//Se clienteCorrente ha già seguito lezioneCorrente la sua frequenza non varia
+		easyDrive.aggiornaFrequenzaClienti(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"));
+		easyDrive.inserisciClienteFrequentante("AR202051");
+		easyDrive.confermaInserimento();
+		System.out.println(easyDrive.getClienteCorrente().getFrequenzaLezioni());
 	}
 }

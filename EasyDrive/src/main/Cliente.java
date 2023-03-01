@@ -98,7 +98,7 @@ public class Cliente {
 	}
 	
 	public void aggiornaFrequenzaLezioni(int numArgomentiSeguiti, int numArgomentiTotali) {
-		this.frequenzaLezioni = numArgomentiSeguiti/numArgomentiTotali*100;
+		this.frequenzaLezioni = (float) numArgomentiSeguiti/numArgomentiTotali*100;
 	}
 	
 	public void incrementaFrequenzaLezioni(Argomento argomento, int numArgomentiTotali) {
