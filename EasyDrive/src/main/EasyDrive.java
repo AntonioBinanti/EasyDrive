@@ -48,7 +48,11 @@ public class EasyDrive {
 	}
 	
 	public void removeCliente(String codiceFiscale) {
-		this.listaClienti.remove(codiceFiscale);
+		if(this.listaClienti.remove(codiceFiscale) != null){
+			System.out.println("Cliente eliminato correttamente");
+		}else {
+			System.out.println("Impossibile rimuovere il cliente con il codice fiscale selezionato");
+		}
 	}
 	
 	public void addLezione(Date data, Time ora, Argomento argomentoTrattato) {
@@ -61,7 +65,7 @@ public class EasyDrive {
 		String dataOra = data.toString() + ora.toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		if(l == null) {
-			System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
+			System.out.println("Nessuna lezione trovata con la data e ora selezionate");
 			return null;
 		}else {
 		return l;
@@ -70,7 +74,11 @@ public class EasyDrive {
 	
 	public void removeLezione(Date data, Time ora) {
 		String dataOra = data.toString() + ora.toString();
-		this.elencoLezioni.remove(dataOra);
+		if(this.elencoLezioni.remove(dataOra) != null) {
+			System.out.println("Lezione eliminata correttamente");
+		}else {
+			System.out.println("Impossibile rimuovere la lezione con la data e l'ora selezionate");
+		}
 	}
 	
 	public void aggiornaFrequenzaClienti(Date data, Time ora) {

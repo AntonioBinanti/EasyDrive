@@ -17,7 +17,6 @@ public class Cliente {
 	
 	public Cliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono,
 			String email, String indirizzo) {
-		super();
 		this.codiceFiscale = codiceFiscale;
 		this.nome = nome;
 		this.cognome = cognome;
@@ -109,6 +108,9 @@ public class Cliente {
 			this.argomentiSeguiti.add(argomento);
 			numArgomentiSeguiti = this.argomentiSeguiti.size();
 			this.aggiornaFrequenzaLezioni(numArgomentiSeguiti, numArgomentiTotali);
+			System.out.println("La frequenza lezioni è stata aggiornata"); // la frequenza viene aggiornata solo se l'argomento non è stato seguito
+		}else {
+			System.out.println("L'argomento: " + argomento.getDescrizione() + " è stato già seguito, la frequenza lezioni non è stata aggiornata");
 		}
 	}
 
@@ -116,7 +118,7 @@ public class Cliente {
 	public String toString() {
 		return "Cliente [codiceFiscale=" + codiceFiscale + ", nome=" + nome + ", cognome=" + cognome + ", dataNascita="
 				+ dataNascita + ", numeroTelefono=" + numeroTelefono + ", email=" + email + ", indirizzo=" + indirizzo
-				+ ", frequenzaLezioni=" + frequenzaLezioni + ", argomentiSeguiti=" + argomentiSeguiti + "]";
+				+ ", frequenzaLezioni=" + frequenzaLezioni + "%" + ", argomentiSeguiti=" + argomentiSeguiti + "]";
 	}
 	
 	

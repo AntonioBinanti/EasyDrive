@@ -5,7 +5,6 @@ public class Argomento {
 	private String descrizione;
 
 	public Argomento(String descrizione) {
-		super();
 		this.descrizione = descrizione;
 	}
 

@@ -10,8 +10,7 @@ public class Lezione {
 	private Time ora;
 	private Argomento argomentoTrattato;
 	
-	public Lezione(Date data, Time ora, Argomento argomentoTrattato) {
-		super();		
+	public Lezione(Date data, Time ora, Argomento argomentoTrattato) {	
 		this.data = data;
 		this.ora = ora;
 		this.argomentoTrattato = argomentoTrattato;
