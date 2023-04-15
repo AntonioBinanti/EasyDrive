@@ -1,6 +1,9 @@
 package main;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,14 +58,15 @@ public class EasyDrive {
 		}
 	}
 	
-	public void addLezione(Date data, Time ora, Argomento argomentoTrattato) {
-		Lezione l = new Lezione(data, ora, argomentoTrattato);
+	public void addLezione(/*Date data, Time ora*/ LocalDate data, LocalTime ora, Argomento argomentoTrattato) {
+		Lezione l = new Lezione(/*data, ora*/ data, ora, argomentoTrattato);
 		this.elencoLezioni.put(l.getCodice(), l);
 		System.out.println("Lezione inserita correttamente in data: " + l.getData().toString() + " e ora: " + l.getOra().toString());
 	}
 	
-	public Lezione getLezione(Date data, Time ora) {
-		String dataOra = data.toString() + ora.toString();
+	public Lezione getLezione(LocalDate data, LocalTime ora) {
+		//String dataOra = data.toString() + ora.toString();
+		String dataOra = LocalDateTime.of(data, ora).toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		if(l == null) {
 			System.out.println("Nessuna lezione trovata con la data e ora selezionate");
@@ -72,8 +76,9 @@ public class EasyDrive {
 		}
 	}
 	
-	public void removeLezione(Date data, Time ora) {
-		String dataOra = data.toString() + ora.toString();
+	public void removeLezione(LocalDate data, LocalTime ora) {
+		//String dataOra = data.toString() + ora.toString();
+		String dataOra = LocalDateTime.of(data, ora).toString();
 		if(this.elencoLezioni.remove(dataOra) != null) {
 			System.out.println("Lezione eliminata correttamente");
 		}else {
@@ -81,8 +86,9 @@ public class EasyDrive {
 		}
 	}
 	
-	public void aggiornaFrequenzaClienti(Date data, Time ora) {
-		String dataOra = data.toString() + ora.toString();
+	public void aggiornaFrequenzaClienti(LocalDate data, LocalTime ora) {
+		//String dataOra = data.toString() + ora.toString();
+		String dataOra = LocalDateTime.of(data, ora).toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		lezioneCorrente = l;
 	}

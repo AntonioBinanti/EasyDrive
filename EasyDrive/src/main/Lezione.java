@@ -1,20 +1,25 @@
 package main;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Lezione {
 	
 	private String codice;
-	private Date data;
-	private Time ora;
+	/*private Date data;
+	private Time ora;*/
+	private LocalDate data;
+	private LocalTime ora;
 	private Argomento argomentoTrattato;
 	
-	public Lezione(Date data, Time ora, Argomento argomentoTrattato) {	
+	public Lezione(/*Date data, Time ora*/ LocalDate data, LocalTime ora, Argomento argomentoTrattato) {	
 		this.data = data;
 		this.ora = ora;
 		this.argomentoTrattato = argomentoTrattato;
-		this.codice = this.data.toString() + this.ora.toString();
+		this.codice = LocalDateTime.of(data, ora).toString();
 	}
 
 	public String getCodice() {
@@ -25,19 +30,19 @@ public class Lezione {
 		this.codice = codice;
 	}
 
-	public Date getData() {
+	public LocalDate getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(LocalDate data) {
 		this.data = data;
 	}
 
-	public Time getOra() {
+	public LocalTime getOra() {
 		return ora;
 	}
 
-	public void setOra(Time ora) {
+	public void setOra(LocalTime ora) {
 		this.ora = ora;
 	}
 
