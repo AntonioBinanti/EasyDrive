@@ -151,4 +151,84 @@ public class TestEasyDrive {
 		assertNull(easyDrive.getClienteCorrente());
 		easyDrive.confermaInserimento();
 	}
+	
+	@Test
+	public void testAddEsameTeorico() {
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 4, 15), LocalTime.of(20, 29));
+		easyDrive.addEsameTeorico(LocalDate.of(2022, 5, 14), LocalTime.of(20, 29));
+		easyDrive.addEsameTeorico(LocalDate.of(2013, 12, 1), LocalTime.of(05, 15));
+		
+		Map<String, EsameTeorico> e = easyDrive.getElencoEsamiTeorici() ;
+		if(e.isEmpty()) {
+			System.out.println("Nessuna esame teorico in lista");
+		}else {
+			for(EsameTeorico esame : e.values()) {
+			System.out.println(esame);
+			}
+		}
+		assertNotNull(easyDrive.getEsameTeorico(LocalDate.of(2023, 4, 15), LocalTime.of(20, 29))); //Data di un esame esistente
+		assertNull(easyDrive.getEsameTeorico(LocalDate.of(2013, 3, 5), LocalTime.of(13, 45))); //data di un esame non esistente
+	}
+	
+	@Test
+	public void testRemoveEsameTeorico() {
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.removeEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		assertNull(easyDrive.getEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+		//Se easyDrive non trova l'esame teorico in elencoEsameTeorico avverte l'amministratore
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.removeEsameTeorico(LocalDate.of(2013, 1, 14), LocalTime.of(10, 28)); //Impossibile rimuovere poichè non è registrato nessun esame per la data e ora salezionati
+		assertNotNull(easyDrive.getEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+	}
+	
+	@Test
+	public void testPrenotaEsameTeorico() {
+		easyDrive.addEsameTeorico(LocalDate.of(2053, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addEsameTeorico(LocalDate.of(2053, 12, 4), LocalTime.of(07, 30));
+		ArrayList<EsameTeorico> lista;
+		assertNotNull(easyDrive.prenotaEsameTeorico());
+		lista = easyDrive.prenotaEsameTeorico();
+		for(EsameTeorico e: lista) {
+			System.out.println(e.toString());
+		}
+	}
+	
+	@Test
+	public void testSelezionaEsame() {
+		easyDrive.addEsameTeorico(LocalDate.of(2053, 2, 28), LocalTime.of(20, 52));
+		easyDrive.selezionaEsame(LocalDate.of(2053, 2, 28), LocalTime.of(20, 52));
+		assertNotNull(easyDrive.getEsameTeoricoCorrente());
+		easyDrive.setEsameTeoricoCorrente(null);
+		easyDrive.selezionaEsame(LocalDate.of(2013, 4, 30), LocalTime.of(17, 15)); //Data e ora di un esame teorico non esistente
+		assertNull(easyDrive.getEsameTeoricoCorrente());
+	}
+	
+	@Test
+	public void testInserisciCliente() {
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		easyDrive.selezionaEsame(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		assertNotNull(easyDrive.getClienteCorrente());
+		//Se selezioniamo un esame non esistente non è possibile completare l'operazione
+		easyDrive.setClienteCorrente(null);
+		easyDrive.setEsameTeoricoCorrente(null);
+		easyDrive.selezionaEsame(LocalDate.of(2021, 3, 15), LocalTime.of(04, 30));
+		easyDrive.inserisciCliente("AR202051");
+		assertNull(easyDrive.getClienteCorrente());
+	}
+	
+	@Test
+	public void testConfermaPrenotazione() {
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		Argomento a1 = new Argomento("Segnali di pericolo");
+		Cliente c = easyDrive.getCliente("AR202051");
+		c.incrementaFrequenzaLezioni(a1, 1);
+		easyDrive.selezionaEsame(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		easyDrive.confermaPrenotazione();
+	}
 }

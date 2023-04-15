@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class EasyDrive {
 	
 	private static EasyDrive easyDrive;
@@ -17,11 +18,14 @@ public class EasyDrive {
 	private ArrayList<Argomento> listaArgomenti;
 	private Map<String, Cliente> listaClienti;
 	private Cliente clienteCorrente;
+	private Map<String, EsameTeorico> elencoEsamiTeorici;
+	private EsameTeorico esameTeoricoCorrente;
 	
 	private EasyDrive() {
 		this.elencoLezioni = new HashMap<>();
 		this.listaArgomenti = new ArrayList<>();
 		this.listaClienti = new HashMap<>();
+		this.elencoEsamiTeorici = new HashMap<>();
 		loadArgomenti();
 	}
 	
@@ -107,6 +111,58 @@ public class EasyDrive {
 		}
 	}
 	
+	public void addEsameTeorico(LocalDate data, LocalTime ora) {
+		EsameTeorico e = new EsameTeorico(data, ora);
+		this.elencoEsamiTeorici.put(e.getCodice(), e);
+		System.out.println("Esame teorico fissato correttamente per la data: " + e.getData().toString() + " e ora: " + e.getOra().toString());
+	}
+	
+	public EsameTeorico getEsameTeorico(LocalDate data, LocalTime ora) {
+		String dataOra = LocalDateTime.of(data, ora).toString();
+		EsameTeorico e = this.elencoEsamiTeorici.get(dataOra);
+		if(e == null) {
+			System.out.println("Nessun esame teorico trovato con la data e ora selezionate");
+			return null;
+		}else {
+		return e;
+		}
+	}
+	
+	public void removeEsameTeorico(LocalDate data, LocalTime ora) {
+		String dataOra = LocalDateTime.of(data, ora).toString();
+		if(this.elencoEsamiTeorici.remove(dataOra) != null) {
+			System.out.println("Esame teorico eliminato correttamente");
+		}else {
+			System.out.println("Impossibile rimuovere l'esame teorico con la data e l'ora selezionate");
+		}
+	}
+	
+	public ArrayList<EsameTeorico> prenotaEsameTeorico() {
+		ArrayList<EsameTeorico> esamiTeoriciDisponibili = new ArrayList<>();
+		for (Map.Entry<String, EsameTeorico> entry : elencoEsamiTeorici.entrySet()) {
+            if(entry.getValue().isDisponibile()){
+                esamiTeoriciDisponibili.add(entry.getValue());
+            }
+        }
+		return esamiTeoriciDisponibili;
+	}
+	
+	public void selezionaEsame(LocalDate data, LocalTime ora) {
+		this.esameTeoricoCorrente = this.getEsameTeorico(data, ora);
+	}
+	
+	public void inserisciCliente(String codiceFiscale) {
+		if(this.esameTeoricoCorrente != null) {
+			this.clienteCorrente = this.getCliente(codiceFiscale);
+		}
+	}
+	
+	public void confermaPrenotazione() {
+		if(this.clienteCorrente != null) {
+			this.esameTeoricoCorrente.prenotaCliente(this.clienteCorrente);
+		}
+	}
+	
 	public void loadArgomenti() {
 		Argomento a1 = new Argomento("Segnali di pericolo");
 		Argomento a2 = new Argomento("Segnali di divieto");
@@ -158,5 +214,16 @@ public class EasyDrive {
 	public Cliente getClienteCorrente() {
 		return clienteCorrente;
 	}
-	
+
+	public EsameTeorico getEsameTeoricoCorrente() {
+		return esameTeoricoCorrente;
+	}
+
+	public void setEsameTeoricoCorrente(EsameTeorico esameTeoricoCorrente) {
+		this.esameTeoricoCorrente = esameTeoricoCorrente;
+	}
+
+	public Map<String, EsameTeorico> getElencoEsamiTeorici() {
+		return elencoEsamiTeorici;
+	}
 }
