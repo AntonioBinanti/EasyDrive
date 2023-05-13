@@ -231,4 +231,28 @@ public class TestEasyDrive {
 		easyDrive.inserisciCliente("AR202051");
 		easyDrive.confermaPrenotazione();
 	}
+	
+	//Prova verifica della modifica di un cliente presente in due liste diverse(DA CANCELLARE)
+	@Test
+	public void prova() {
+		easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		Argomento a1 = new Argomento("Segnali di pericolo");
+		Cliente c = easyDrive.getCliente("AR202051");
+		c.incrementaFrequenzaLezioni(a1, 1);
+		easyDrive.selezionaEsame(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		easyDrive.confermaPrenotazione();
+		EsameTeorico e = easyDrive.getEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		Cliente c2 = e.getElencoPrenotatiEsameTeorico().get("AR202051");
+		System.out.println(c.toString());
+		System.out.println(c2.toString());
+		c2.setEmail("Email di c2@boh.com");
+		System.out.println(c.toString());
+		System.out.println(c2.toString());
+		c.setEmail("Email di c1@boh.com");
+		System.out.println(c.toString());
+		System.out.println(c2.toString());
+	}
 }
