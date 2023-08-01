@@ -7,25 +7,28 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
 public class EasyDrive {
 	
 	private static EasyDrive easyDrive;
-	private Map<String, Lezione> elencoLezioni;
+	private HashMap<String, Lezione> elencoLezioni;
 	private Lezione lezioneCorrente;
 	private ArrayList<Argomento> listaArgomenti;
-	private Map<String, Cliente> listaClienti;
+	private HashMap<String, Cliente> listaClienti;
 	private Cliente clienteCorrente;
-	private Map<String, EsameTeorico> elencoEsamiTeorici;
+	private HashMap<String, EsameTeorico> elencoEsamiTeorici;
 	private EsameTeorico esameTeoricoCorrente;
+	private HashMap<String, Cliente> listaBocciatiDebitori;
 	
 	private EasyDrive() {
 		this.elencoLezioni = new HashMap<>();
 		this.listaArgomenti = new ArrayList<>();
 		this.listaClienti = new HashMap<>();
 		this.elencoEsamiTeorici = new HashMap<>();
+		this.listaBocciatiDebitori = new HashMap<>();
 		loadArgomenti();
 	}
 	
@@ -163,6 +166,44 @@ public class EasyDrive {
 		}
 	}
 	
+	public ArrayList<EsameTeorico> esitiEsameTeoricoPubblica() {
+		ArrayList<EsameTeorico> esamiTeoriciDisponibili = new ArrayList<>();
+		for (Map.Entry<String, EsameTeorico> entry : elencoEsamiTeorici.entrySet()) {
+            if(entry.getValue().isAntecedente() ){
+                esamiTeoriciDisponibili.add(entry.getValue());
+            }
+        }
+		return esamiTeoriciDisponibili;
+	}
+	
+	public HashMap<String, Cliente> esitiEsameTeoricoSeleziona(LocalDate data, LocalTime ora){
+		this.esameTeoricoCorrente = this.getEsameTeorico(data, ora);
+		return this.esameTeoricoCorrente.getElencoPrenotatiEsameTeorico();
+	}
+	
+	public void esitoEsameTeoricoInserisciCliente(String codiceFiscale) {
+		if(this.esameTeoricoCorrente != null) {
+			this.esameTeoricoCorrente.promuoviCliente(codiceFiscale);
+		}else {
+			System.out.println("esame teorico non selezionato");
+		}
+	}
+	
+	public void esitiEsameTeoricoConferma() {
+		this.esameTeoricoCorrente.confermaEsiti();
+	}
+	
+	public void aggiornaBocciatiDebitori() {
+		Iterator<Map.Entry<String, Cliente>> it = this.listaClienti.entrySet().iterator();
+        while (it.hasNext()) {
+        	Cliente c = it.next().getValue();
+            if (c.getNumeroBocciature() >= 2){
+            	this.listaBocciatiDebitori.put(c.getCodiceFiscale(), c);
+                it.remove();
+            }
+        }
+	}
+	
 	public void loadArgomenti() {
 		Argomento a1 = new Argomento("Segnali di pericolo");
 		Argomento a2 = new Argomento("Segnali di divieto");
@@ -187,7 +228,7 @@ public class EasyDrive {
 		System.out.println("Caricamento argomenti completato");
 	}
 
-	public Map<String, Lezione> getElencoLezioni() {
+	public HashMap<String, Lezione> getElencoLezioni() {
 		return elencoLezioni;
 	}
 
@@ -203,7 +244,7 @@ public class EasyDrive {
 		return listaArgomenti;
 	}
 
-	public Map<String, Cliente> getListaClienti() {
+	public HashMap<String, Cliente> getListaClienti() {
 		return listaClienti;
 	}
 	
@@ -223,7 +264,11 @@ public class EasyDrive {
 		this.esameTeoricoCorrente = esameTeoricoCorrente;
 	}
 
-	public Map<String, EsameTeorico> getElencoEsamiTeorici() {
+	public HashMap<String, EsameTeorico> getElencoEsamiTeorici() {
 		return elencoEsamiTeorici;
+	}
+
+	public HashMap<String, Cliente> getListaBocciatiDebitori() {
+		return listaBocciatiDebitori;
 	}
 }

@@ -14,6 +14,8 @@ public class Cliente {
 	private String indirizzo;
 	private float frequenzaLezioni;
 	private ArrayList<Argomento> argomentiSeguiti;
+	private boolean foglioRosa;
+	private int numeroBocciature;
 	
 	public Cliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono,
 			String email, String indirizzo) {
@@ -26,6 +28,28 @@ public class Cliente {
 		this.indirizzo = indirizzo;
 		this.argomentiSeguiti = new ArrayList<>();
 		this.frequenzaLezioni = 0;
+	}
+	
+	public void aggiornaFrequenzaLezioni(int numArgomentiSeguiti, int numArgomentiTotali) {
+		this.frequenzaLezioni = (float) numArgomentiSeguiti/numArgomentiTotali*100;
+	}
+	
+	public void incrementaFrequenzaLezioni(Argomento argomento, int numArgomentiTotali) {
+		boolean b;
+		int numArgomentiSeguiti;
+		b= this.argomentiSeguiti.contains(argomento);
+		if(b == false) {
+			this.argomentiSeguiti.add(argomento);
+			numArgomentiSeguiti = this.argomentiSeguiti.size();
+			this.aggiornaFrequenzaLezioni(numArgomentiSeguiti, numArgomentiTotali);
+			System.out.println("La frequenza lezioni è stata aggiornata"); // la frequenza viene aggiornata solo se l'argomento non è stato seguito
+		}else {
+			System.out.println("L'argomento: " + argomento.getDescrizione() + " è stato già seguito, la frequenza lezioni non è stata aggiornata");
+		}
+	}
+	
+	public void incrementaNumeroBocciature() {
+		this.numeroBocciature ++;
 	}
 
 	public String getCodiceFiscale() {
@@ -96,29 +120,32 @@ public class Cliente {
 		return frequenzaLezioni;
 	}
 	
-	public void aggiornaFrequenzaLezioni(int numArgomentiSeguiti, int numArgomentiTotali) {
-		this.frequenzaLezioni = (float) numArgomentiSeguiti/numArgomentiTotali*100;
+	public void setFrequenzaLezioni(float frequenzaLezioni) {
+		this.frequenzaLezioni = frequenzaLezioni;
 	}
-	
-	public void incrementaFrequenzaLezioni(Argomento argomento, int numArgomentiTotali) {
-		boolean b;
-		int numArgomentiSeguiti;
-		b= this.argomentiSeguiti.contains(argomento);
-		if(b == false) {
-			this.argomentiSeguiti.add(argomento);
-			numArgomentiSeguiti = this.argomentiSeguiti.size();
-			this.aggiornaFrequenzaLezioni(numArgomentiSeguiti, numArgomentiTotali);
-			System.out.println("La frequenza lezioni è stata aggiornata"); // la frequenza viene aggiornata solo se l'argomento non è stato seguito
-		}else {
-			System.out.println("L'argomento: " + argomento.getDescrizione() + " è stato già seguito, la frequenza lezioni non è stata aggiornata");
-		}
+
+	public boolean getFoglioRosa() {
+		return foglioRosa;
+	}
+
+	public void setFoglioRosa(boolean foglioRosa) {
+		this.foglioRosa = foglioRosa;
+	}
+
+	public int getNumeroBocciature() {
+		return numeroBocciature;
+	}
+
+	public void setNumeroBocciature(int numeroBocciature) {
+		this.numeroBocciature = numeroBocciature;
 	}
 
 	@Override
 	public String toString() {
 		return "Cliente [codiceFiscale=" + codiceFiscale + ", nome=" + nome + ", cognome=" + cognome + ", dataNascita="
 				+ dataNascita + ", numeroTelefono=" + numeroTelefono + ", email=" + email + ", indirizzo=" + indirizzo
-				+ ", frequenzaLezioni=" + frequenzaLezioni + "%" + ", argomentiSeguiti=" + argomentiSeguiti + "]";
+				+ ", frequenzaLezioni=" + frequenzaLezioni + ", argomentiSeguiti=" + argomentiSeguiti + ", foglioRosa="
+				+ foglioRosa + ", numeroBocciature=" + numeroBocciature + "]";
 	}
 	
 	

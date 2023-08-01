@@ -39,4 +39,19 @@ public class TestCliente {
 		c.aggiornaFrequenzaLezioni(1, 10);
 		assertEquals(c.getFrequenzaLezioni(), 10.0, 0);
 	}
+	
+	@Test
+	public void testIncrementaNumeroBocciature() {
+		System.out.println("numero bocciature iniziali: " + c.getNumeroBocciature());
+		assert c.getNumeroBocciature() == 0;
+		c.incrementaNumeroBocciature();
+		System.out.println("numero bocciature: " + c.getNumeroBocciature());
+		assert c.getNumeroBocciature() == 1;
+		c.incrementaNumeroBocciature();
+		System.out.println("numero bocciature: " + c.getNumeroBocciature());
+		assert c.getNumeroBocciature() == 2;
+		c.incrementaNumeroBocciature();
+		System.out.println("numero bocciature: " + c.getNumeroBocciature());
+		assert c.getNumeroBocciature() == 3;
+	}
 }
