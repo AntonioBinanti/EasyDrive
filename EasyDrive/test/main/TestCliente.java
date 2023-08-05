@@ -54,4 +54,19 @@ public class TestCliente {
 		System.out.println("numero bocciature: " + c.getNumeroBocciature());
 		assert c.getNumeroBocciature() == 3;
 	}
+	
+	@Test
+	public void testAggiornaNumeroGuide() {
+		System.out.println("numero guide iniziali: " + c.getNumeroGuide());
+		assert c.getNumeroGuide() == 0;
+		c.aggiornaNumeroGuide();
+		System.out.println("numero guide: " + c.getNumeroGuide());
+		assert c.getNumeroGuide() == 1;
+		c.aggiornaNumeroGuide();
+		System.out.println("numero guide: " + c.getNumeroGuide());
+		assert c.getNumeroGuide() == 2;
+		c.aggiornaNumeroGuide();
+		System.out.println("numero guide: " + c.getNumeroGuide());
+		assert c.getNumeroGuide() == 3;
+	}
 }

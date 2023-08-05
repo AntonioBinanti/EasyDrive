@@ -19,15 +19,15 @@ public class EasyDrive {
 	private ArrayList<Argomento> listaArgomenti;
 	private HashMap<String, Cliente> listaClienti;
 	private Cliente clienteCorrente;
-	private HashMap<String, EsameTeorico> elencoEsamiTeorici;
-	private EsameTeorico esameTeoricoCorrente;
+	private HashMap<String, Attività> elencoAttività;
+	private Attività attivitàCorrente;
 	private HashMap<String, Cliente> listaBocciatiDebitori;
 	
 	private EasyDrive() {
 		this.elencoLezioni = new HashMap<>();
 		this.listaArgomenti = new ArrayList<>();
 		this.listaClienti = new HashMap<>();
-		this.elencoEsamiTeorici = new HashMap<>();
+		this.elencoAttività = new HashMap<>();
 		this.listaBocciatiDebitori = new HashMap<>();
 		loadArgomenti();
 	}
@@ -115,82 +115,95 @@ public class EasyDrive {
 	}
 	
 	public void addEsameTeorico(LocalDate data, LocalTime ora) {
-		EsameTeorico e = new EsameTeorico(data, ora);
-		this.elencoEsamiTeorici.put(e.getCodice(), e);
-		System.out.println("Esame teorico fissato correttamente per la data: " + e.getData().toString() + " e ora: " + e.getOra().toString());
+		Attività a = new EsameTeorico(data, ora);
+		this.elencoAttività.put(a.getCodice(), a);
+		System.out.println("Esame teorico fissato correttamente per la data: " + a.getData().toString() + " e ora: " + a.getOra().toString());
 	}
 	
-	public EsameTeorico getEsameTeorico(LocalDate data, LocalTime ora) {
+	public Attività getAttività(LocalDate data, LocalTime ora) {
 		String dataOra = LocalDateTime.of(data, ora).toString();
-		EsameTeorico e = this.elencoEsamiTeorici.get(dataOra);
-		if(e == null) {
-			System.out.println("Nessun esame teorico trovato con la data e ora selezionate");
+		Attività a = this.elencoAttività.get(dataOra);
+		if(a == null) {
+			System.out.println("Nessuna attività trovata con la data e ora selezionate");
 			return null;
 		}else {
-		return e;
+		return a;
 		}
 	}
 	
-	public void removeEsameTeorico(LocalDate data, LocalTime ora) {
+	public void removeAttività(LocalDate data, LocalTime ora) {
 		String dataOra = LocalDateTime.of(data, ora).toString();
-		if(this.elencoEsamiTeorici.remove(dataOra) != null) {
-			System.out.println("Esame teorico eliminato correttamente");
+		if(this.elencoAttività.remove(dataOra) != null) {
+			System.out.println("Attività eliminata correttamente");
 		}else {
-			System.out.println("Impossibile rimuovere l'esame teorico con la data e l'ora selezionate");
+			System.out.println("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 		}
 	}
 	
 	public ArrayList<EsameTeorico> prenotaEsameTeorico() {
 		ArrayList<EsameTeorico> esamiTeoriciDisponibili = new ArrayList<>();
-		for (Map.Entry<String, EsameTeorico> entry : elencoEsamiTeorici.entrySet()) {
-            if(entry.getValue().isDisponibile()){
-                esamiTeoriciDisponibili.add(entry.getValue());
-            }
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof EsameTeorico) {
+				if(entry.getValue().isDisponibile()){
+                esamiTeoriciDisponibili.add((EsameTeorico)entry.getValue());
+                }
+			}
         }
 		return esamiTeoriciDisponibili;
 	}
 	
-	public void selezionaEsame(LocalDate data, LocalTime ora) {
-		this.esameTeoricoCorrente = this.getEsameTeorico(data, ora);
+	public void selezionaAttività(LocalDate data, LocalTime ora) {
+		this.attivitàCorrente = this.getAttività(data, ora);
 	}
 	
 	public void inserisciCliente(String codiceFiscale) {
-		if(this.esameTeoricoCorrente != null) {
+		if(this.attivitàCorrente != null) {
 			this.clienteCorrente = this.getCliente(codiceFiscale);
 		}
 	}
 	
-	public void confermaPrenotazione() {
-		if(this.clienteCorrente != null) {
-			this.esameTeoricoCorrente.prenotaCliente(this.clienteCorrente);
+	public void confermaPrenotazioneEsameTeorico() {
+		if(this.clienteCorrente != null && this.attivitàCorrente instanceof EsameTeorico) {
+			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
 		}
 	}
 	
 	public ArrayList<EsameTeorico> esitiEsameTeoricoPubblica() {
 		ArrayList<EsameTeorico> esamiTeoriciDisponibili = new ArrayList<>();
-		for (Map.Entry<String, EsameTeorico> entry : elencoEsamiTeorici.entrySet()) {
-            if(entry.getValue().isAntecedente() ){
-                esamiTeoriciDisponibili.add(entry.getValue());
-            }
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof EsameTeorico) {
+				if(entry.getValue().isAntecedente() ){
+                esamiTeoriciDisponibili.add((EsameTeorico)entry.getValue());
+                }
+			} 
         }
 		return esamiTeoriciDisponibili;
 	}
 	
 	public HashMap<String, Cliente> esitiEsameTeoricoSeleziona(LocalDate data, LocalTime ora){
-		this.esameTeoricoCorrente = this.getEsameTeorico(data, ora);
-		return this.esameTeoricoCorrente.getElencoPrenotatiEsameTeorico();
+		this.attivitàCorrente = this.getAttività(data, ora);
+		if(this.attivitàCorrente != null) {
+			return this.attivitàCorrente.getElencoPrenotatiAttività();
+		}else {
+			return null;
+		}
 	}
 	
 	public void esitoEsameTeoricoInserisciCliente(String codiceFiscale) {
-		if(this.esameTeoricoCorrente != null) {
-			this.esameTeoricoCorrente.promuoviCliente(codiceFiscale);
+		if(this.attivitàCorrente != null && this.attivitàCorrente instanceof EsameTeorico) {
+			EsameTeorico a = (EsameTeorico)this.attivitàCorrente;
+			a.promuoviCliente(codiceFiscale);
 		}else {
 			System.out.println("esame teorico non selezionato");
 		}
 	}
 	
 	public void esitiEsameTeoricoConferma() {
-		this.esameTeoricoCorrente.confermaEsiti();
+		if(this.attivitàCorrente instanceof EsameTeorico) {
+			EsameTeorico e = (EsameTeorico)this.attivitàCorrente;
+			e.confermaEsiti();
+			this.aggiornaBocciatiDebitori();
+		}
 	}
 	
 	public void aggiornaBocciatiDebitori() {
@@ -202,6 +215,63 @@ public class EasyDrive {
                 it.remove();
             }
         }
+	}
+	
+	public void addGuida(LocalDate data, LocalTime ora) {
+		Attività a = new Guida(data, ora);
+		this.elencoAttività.put(a.getCodice(), a);
+		System.out.println("Guida fissata correttamente per la data: " + a.getData().toString() + " e ora: " + a.getOra().toString());
+	}
+	
+	public ArrayList<Guida> prenotaGuida(){
+		ArrayList<Guida> guideDisponibili = new ArrayList<>();
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof Guida) {
+				if(entry.getValue().isDisponibile()){
+                guideDisponibili.add((Guida)entry.getValue());
+                }
+			}
+        }
+		return guideDisponibili;
+	}
+	
+	public void confermaPrenotazioneGuida() {
+		if(this.clienteCorrente != null && this.attivitàCorrente instanceof Guida) {
+			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
+			}
+	}
+	
+	public ArrayList<Guida> aggiornaNumeroGuide(){
+		ArrayList<Guida> guideDisponibili = new ArrayList<>();
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof Guida) {
+				if(entry.getValue().isAntecedente()){
+                guideDisponibili.add((Guida)entry.getValue());
+                }
+			}
+        }
+		return guideDisponibili;
+	}
+	
+	public HashMap<String, Cliente> selezionaGuida(LocalDate data, LocalTime ora){
+		this.attivitàCorrente = this.getAttività(data, ora);
+		if(this.attivitàCorrente != null) {
+			return this.attivitàCorrente.getElencoPrenotatiAttività();
+		}else {
+			return null;
+		}
+	}
+	
+	public void aggiornaGuideInserisciCliente(String codiceFiscale) {
+		if(this.attivitàCorrente != null) {
+			this.clienteCorrente = this.getCliente(codiceFiscale);
+		}
+	}
+	
+	public void aggiornaGuideConferma() {
+		if(this.clienteCorrente != null) {
+			this.clienteCorrente.aggiornaNumeroGuide();
+		}
 	}
 	
 	public void loadArgomenti() {
@@ -256,16 +326,16 @@ public class EasyDrive {
 		return clienteCorrente;
 	}
 
-	public EsameTeorico getEsameTeoricoCorrente() {
-		return esameTeoricoCorrente;
+	public Attività getAttivitàCorrente() {
+		return attivitàCorrente;
 	}
 
-	public void setEsameTeoricoCorrente(EsameTeorico esameTeoricoCorrente) {
-		this.esameTeoricoCorrente = esameTeoricoCorrente;
+	public void setAttivitàCorrente(Attività attivitàCorrente) {
+		this.attivitàCorrente = attivitàCorrente;
 	}
 
-	public HashMap<String, EsameTeorico> getElencoEsamiTeorici() {
-		return elencoEsamiTeorici;
+	public HashMap<String, Attività> getElencoAttività() {
+		return elencoAttività;
 	}
 
 	public HashMap<String, Cliente> getListaBocciatiDebitori() {

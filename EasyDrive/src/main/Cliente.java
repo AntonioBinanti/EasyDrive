@@ -16,6 +16,7 @@ public class Cliente {
 	private ArrayList<Argomento> argomentiSeguiti;
 	private boolean foglioRosa;
 	private int numeroBocciature;
+	private int numeroGuide;
 	
 	public Cliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono,
 			String email, String indirizzo) {
@@ -50,6 +51,11 @@ public class Cliente {
 	
 	public void incrementaNumeroBocciature() {
 		this.numeroBocciature ++;
+	}
+	
+	public void aggiornaNumeroGuide() {
+		this.numeroGuide ++;
+		System.out.println("Numero guide aggiornate");
 	}
 
 	public String getCodiceFiscale() {
@@ -139,13 +145,21 @@ public class Cliente {
 	public void setNumeroBocciature(int numeroBocciature) {
 		this.numeroBocciature = numeroBocciature;
 	}
+	
+	public int getNumeroGuide() {
+		return numeroGuide;
+	}
+
+	public void setNumeroGuide(int numeroGuide) {
+		this.numeroGuide = numeroGuide;
+	}
 
 	@Override
 	public String toString() {
 		return "Cliente [codiceFiscale=" + codiceFiscale + ", nome=" + nome + ", cognome=" + cognome + ", dataNascita="
 				+ dataNascita + ", numeroTelefono=" + numeroTelefono + ", email=" + email + ", indirizzo=" + indirizzo
 				+ ", frequenzaLezioni=" + frequenzaLezioni + ", argomentiSeguiti=" + argomentiSeguiti + ", foglioRosa="
-				+ foglioRosa + ", numeroBocciature=" + numeroBocciature + "]";
+				+ foglioRosa + ", numeroBocciature=" + numeroBocciature + ", numeroGuide=" + numeroGuide + "]";
 	}
 	
 	

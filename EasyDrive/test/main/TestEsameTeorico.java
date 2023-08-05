@@ -31,13 +31,13 @@ public class TestEsameTeorico {
 		//Il cliente non potrà prenotarsi poichè non ha una frequenza lezioni >= 70%
 		System.out.println(c.toString());
 		e.prenotaCliente(c);
-		assertTrue(e.getElencoPrenotatiEsameTeorico().isEmpty()); //L'elenco è vuoto
+		assertTrue(e.getElencoPrenotatiAttività().isEmpty()); //L'elenco è vuoto
 		//Il cliente potrà  prenotarsi una volta superata la frequenza desiderata
 		Argomento a1 = new Argomento("Segnali di pericolo");
 		c.incrementaFrequenzaLezioni(a1, 1);
 		System.out.println(c.toString());
 		e.prenotaCliente(c);
-		assertNotNull(e.getElencoPrenotatiEsameTeorico());
+		assertNotNull(e.getElencoPrenotatiAttività());
 	}
 	
 	@Test
@@ -56,9 +56,15 @@ public class TestEsameTeorico {
 		//Solo il cliente c1 avrà l'attributo "foglioRosa" pari a "true"
 		assertTrue(c1.getFoglioRosa());
 		assertFalse(c2.getFoglioRosa());
-		for (Map.Entry<String, Cliente> entry : e.getElencoPrenotatiEsameTeorico().entrySet()) {
+		for (Map.Entry<String, Cliente> entry : e.getElencoPrenotatiAttività().entrySet()) {
             System.out.println(entry.toString());
             }
+	}
+	
+	@Test
+	public void testIsAntecedente() {
+		//L'esame teorico ha una data antecedente al momento della chiamata della funzione
+		assertTrue(e.isAntecedente());
 	}
 	
 	@Test
@@ -90,7 +96,7 @@ public class TestEsameTeorico {
 		assert c3.getNumeroBocciature() == 0;
 		assert c2.getNumeroBocciature() > 0;
 		assert c4.getNumeroBocciature() > 0;
-		for (Map.Entry<String, Cliente> entry : e.getElencoPrenotatiEsameTeorico().entrySet()) {
+		for (Map.Entry<String, Cliente> entry : e.getElencoPrenotatiAttività().entrySet()) {
             System.out.println(entry.toString());
             }
 	}
