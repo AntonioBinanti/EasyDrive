@@ -212,6 +212,10 @@ public class TestEasyDrive {
 		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
 				"via Rossi 25");
 		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		//se selezioniamo un cliente non registrato nel sistema, non sarà possibile completare l'operazione
+		easyDrive.inserisciCliente("ZZ151515");
+		assertNull(easyDrive.getClienteCorrente());
+		
 		easyDrive.inserisciCliente("AR202051");
 		assertNotNull(easyDrive.getClienteCorrente());
 		//Se selezioniamo un esame non esistente non è possibile completare l'operazione
@@ -290,20 +294,6 @@ public class TestEasyDrive {
 			System.out.println(entry.getValue().toString());
 		}
 
-		/*EsameTeorico e = easyDrive.getEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
-		Cliente c1 = easyDrive.getCliente("AR202051");
-		Cliente c2 = easyDrive.getCliente("MB202051");
-		Cliente c3 = easyDrive.getCliente("MV202051");
-		e.getElencoPrenotatiEsameTeorico().put("AR202051", c1);
-		e.getElencoPrenotatiEsameTeorico().put("MB202051", c2);
-		e.getElencoPrenotatiEsameTeorico().put("MV202051", c3);
-		HashMap<String, Cliente> prenotati = new HashMap<>();
-		prenotati = easyDrive.esitiEsameTeoricoSeleziona(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
-		assertNotNull(easyDrive.getEsameTeoricoCorrente());
-		assertNotNull(prenotati);
-		for (Map.Entry<String, Cliente> entry : prenotati.entrySet()) {
-			System.out.println(entry.getValue().toString());
-		}*/
 	}
 	
 	@Test
@@ -605,4 +595,228 @@ public class TestEasyDrive {
 		assert c.getNumeroGuide() == 1;
 		System.out.println(c.toString());
 	}
+	
+	@Test
+	public void testAddEsameFinale() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 4, 15), LocalTime.of(20, 29));
+		easyDrive.addEsameFinale(LocalDate.of(2022, 5, 14), LocalTime.of(20, 29));
+		easyDrive.addEsameFinale(LocalDate.of(2013, 12, 1), LocalTime.of(05, 15));
+		
+		Map<String, Attività> a = easyDrive.getElencoAttività() ;
+		if(a.isEmpty()) {
+			System.out.println("Nessuna esame finale in lista");
+		}else {
+			for(Attività esame : a.values()) {
+			System.out.println(esame);
+			}
+		}
+		assertNotNull(easyDrive.getAttività(LocalDate.of(2023, 4, 15), LocalTime.of(20, 29))); //Data di un esame finale esistente
+		assertNull(easyDrive.getAttività(LocalDate.of(2013, 3, 5), LocalTime.of(13, 45))); //data di un esame finale non esistente
+	}
+	
+	@Test
+	public void testPrenotaEsameFinale() {
+	easyDrive.addEsameFinale(LocalDate.of(2053, 2, 28), LocalTime.of(20, 52));
+	easyDrive.addEsameFinale(LocalDate.of(2053, 12, 4), LocalTime.of(07, 30));
+	ArrayList<EsameFinale> lista; //verrà riempita in seguito dal metodo "prenotaEsameFinale" poichè esso scorrerà la mappa "elencoAttività" e ritornerà solo quelli con data successiva a quella odierna
+	assertNotNull(easyDrive.prenotaEsameFinale());
+	lista = easyDrive.prenotaEsameFinale();
+	for(Attività a: lista){
+		System.out.println(a.toString());
+		}
+	}
+	
+	@Test
+	public void testConfermaPrenotazioneEsameFinale() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addEsameTeorico(LocalDate.of(2022, 12, 10), LocalTime.of(20, 00));
+		easyDrive.addGuida(LocalDate.of(2023, 1, 15), LocalTime.of(12, 00));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		Argomento a1 = new Argomento("Segnali di pericolo");
+		Cliente c = easyDrive.getCliente("AR202051");
+		c.incrementaFrequenzaLezioni(a1, 1);
+		easyDrive.prenotaEsameFinale();
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		//se il cliente non ha un numero di guide sufficienti, non potrà essere prenotato per l'esame finale
+		easyDrive.prenotaEsameFinale();
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		easyDrive.confermaPrenotazioneEsameFinale();
+		//prenotiamo il cliente ad un esame teorico
+		easyDrive.prenotaEsameTeorico();
+		easyDrive.selezionaAttività(LocalDate.of(2022, 12, 10), LocalTime.of(20, 00));
+		easyDrive.inserisciCliente("AR202051");
+		easyDrive.confermaPrenotazioneEsameTeorico();
+		//promuoviamo il cliente all'esame teorico (foglioRosa=True)
+		easyDrive.esitiEsameTeoricoPubblica();
+		easyDrive.esitiEsameTeoricoSeleziona(LocalDate.of(2022, 12, 10), LocalTime.of(20, 00));
+		easyDrive.esitoEsameTeoricoInserisciCliente("AR202051");
+		easyDrive.esitiEsameTeoricoConferma();
+		//incrementiamo il numero di guide del cliente e prenotiamo il cliente all'esame finale
+		c.setNumeroGuide(15);
+		easyDrive.prenotaEsameFinale();
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.inserisciCliente("AR202051");
+		easyDrive.confermaPrenotazioneEsameFinale();
+		assertNotNull(easyDrive.getAttivitàCorrente().getElencoPrenotatiAttività());
+		
+	}
+	
+	@Test
+	public void testEsitiEsameFinalePubblica() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)); 
+		easyDrive.addEsameFinale(LocalDate.of(2024, 5, 18), LocalTime.of(20, 52)); //Esame finale con data non antecedente, non verrà inserito nella lista "esamiTeoriciDisponibili"
+		easyDrive.addEsameFinale(LocalDate.of(2023, 7, 20), LocalTime.of(20, 52));
+		ArrayList<EsameFinale> esamiFinaliDisponibili = new ArrayList<>();
+		esamiFinaliDisponibili = easyDrive.esitiEsameFinalePubblica();
+		assertNotNull(esamiFinaliDisponibili);
+		for (Attività a : esamiFinaliDisponibili) {
+			System.out.println(a.toString());
+		}
+	}
+	
+	@Test
+	public void testEsitiEsameFinaleSeleziona() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		easyDrive.addCliente("MB202051", "Alessio", "Bianchi", Date.valueOf("2001-1-1"), "0954789562", "Alessio.Bianchi@gmail.com", 
+				"via Rossi 26");
+		easyDrive.addCliente("MV202051", "Marco", "Verdi", Date.valueOf("2002-1-1"), "0951616129", "Marco.Verdi@gmail.com", 
+				"via Rossi 24");
+		
+		//Prenotiamo i clienti all'esame finale
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		Cliente c1 = easyDrive.getCliente("AR202051");
+		Cliente c2 = easyDrive.getCliente("MB202051");
+		Cliente c3 = easyDrive.getCliente("MV202051");
+		//Inserimento clienti all'esame finale
+		c1.setFoglioRosa(true);
+		c1.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c1.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+		
+		c2.setFoglioRosa(true);
+		c2.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c2.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+		
+		c3.setFoglioRosa(true);
+		c3.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c3.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+		
+		HashMap<String, Cliente> prenotati = new HashMap<>();
+		//Se inseriamo la data di un esame finale non registrato nel sistema verremo avvertiti
+		prenotati = easyDrive.esitiEsameFinaleSeleziona(LocalDate.of(2022, 3, 10), LocalTime.of(20, 52));
+		assertNull(easyDrive.getAttivitàCorrente());
+		assertNull(prenotati);
+		
+		prenotati = easyDrive.esitiEsameFinaleSeleziona(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		assertNotNull(easyDrive.getAttivitàCorrente());
+		assertNotNull(prenotati);
+		for (Map.Entry<String, Cliente> entry : prenotati.entrySet()) {
+			System.out.println(entry.getValue().toString());
+		}
+
+	}
+	
+	@Test
+	public void testEsameFinaleInserisciCliente() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		easyDrive.addCliente("MB202051", "Alessio", "Bianchi", Date.valueOf("2001-1-1"), "0954789562", "Alessio.Bianchi@gmail.com", 
+				"via Rossi 26");
+		easyDrive.addCliente("MV202051", "Marco", "Verdi", Date.valueOf("2002-1-1"), "0951616129", "Marco.Verdi@gmail.com", 
+				"via Rossi 24");
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		Cliente c1 = easyDrive.getCliente("AR202051");
+		Cliente c2 = easyDrive.getCliente("MB202051");
+		Cliente c3 = easyDrive.getCliente("MV202051");
+		//Inserimento clienti all'esame finale
+		c1.setFoglioRosa(true);
+		c1.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c1.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+				
+		c2.setFoglioRosa(true);
+		c2.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c2.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+				
+		c3.setFoglioRosa(true);
+		c3.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c3.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+		
+		HashMap<String, Cliente> prenotati = new HashMap<>();
+		prenotati =	easyDrive.esitiEsameFinaleSeleziona(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.esitoEsameFinaleInserisciCliente(c1.getCodiceFiscale());
+		assertTrue(c1.getPatente());
+		easyDrive.esitoEsameFinaleInserisciCliente(c2.getCodiceFiscale());
+		assertTrue(c2.getPatente());
+		assertFalse(c3.getPatente());
+		for (Map.Entry<String, Cliente> entry : prenotati.entrySet()) {
+			System.out.println(entry.getValue().toString());
+		}
+	}
+	
+	@Test
+	public void testEsitiEsameFinaleConferma() {
+		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+				"via Rossi 25");
+		easyDrive.addCliente("MB202051", "Alessio", "Bianchi", Date.valueOf("2001-1-1"), "0954789562", "Alessio.Bianchi@gmail.com", 
+				"via Rossi 26");
+		easyDrive.addCliente("MV202051", "Marco", "Verdi", Date.valueOf("2002-1-1"), "0951616129", "Marco.Verdi@gmail.com", 
+				"via Rossi 24");
+		
+		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		Cliente c1 = easyDrive.getCliente("AR202051");
+		Cliente c2 = easyDrive.getCliente("MB202051");
+		Cliente c3 = easyDrive.getCliente("MV202051");
+		
+		//Inserimento clienti all'esame finale
+		c1.setFoglioRosa(true);
+		c1.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c1.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+						
+		c2.setFoglioRosa(true);
+		c2.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c2.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+						
+		c3.setFoglioRosa(true);
+		c3.setNumeroGuide(15);
+		easyDrive.inserisciCliente(c3.getCodiceFiscale());
+		easyDrive.confermaPrenotazioneEsameFinale();
+				
+		HashMap<String, Cliente> prenotati = new HashMap<>(); 
+		prenotati =	easyDrive.esitiEsameFinaleSeleziona(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)); //Lista Prenotati all'esame finale (NON LISTA CLIENTI)
+		easyDrive.esitoEsameFinaleInserisciCliente(c1.getCodiceFiscale());
+		assertTrue(c1.getPatente());
+		easyDrive.esitoEsameFinaleInserisciCliente(c2.getCodiceFiscale());
+		assertTrue(c2.getPatente());
+		assertFalse(c3.getPatente());
+		easyDrive.esitiEsameFinaleConferma();
+		assert c1.getNumeroBocciatureEsameFinale() == 0;
+		assert c2.getNumeroBocciatureEsameFinale() == 0;
+		assert c3.getNumeroBocciatureEsameFinale() > 0;
+		for (Map.Entry<String, Cliente> entry : prenotati.entrySet()) {
+			System.out.println(entry.getValue().toString());
+		}
+		/////////////////
+		easyDrive.esitiEsameFinaleSeleziona(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+		easyDrive.esitiEsameFinaleConferma();
+		assertFalse(c3.getFoglioRosa());
+		assert c3.getNumeroGuide() == 0; 
+		for (Map.Entry<String, Cliente> entry : prenotati.entrySet()) {
+			System.out.println(entry.getValue().toString());
+		}
+	}
 }
+

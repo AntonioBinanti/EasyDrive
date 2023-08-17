@@ -17,6 +17,7 @@ public class EsameTeorico extends Attività{
 		Cliente c = this.elencoPrenotatiAttività.get(codiceFiscale);
 		if(c != null) {
 			c.setFoglioRosa(true);
+			c.setNumeroBocciatureEsameFinale(0);
 		}else {
 			System.out.println("Nessun cliente con il seguente codice fiscale era prenotato per l'esame teorico selezionato");
 		}
@@ -26,6 +27,7 @@ public class EsameTeorico extends Attività{
 		float frequenza = c.getFrequenzaLezioni();
 		if(frequenza >= 70.0) {
 			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c); 
+			System.out.println("Il cliente " + c.getCognome() + " prenotato correttamente per l'esame teorico");
 		}else {
 			System.out.println("Il cliente " + c.getCognome() + " non può essere prenotato per l'esame poichè ha una frequenza lezioni del "
 					+ c.getFrequenzaLezioni() + "(Minore del 70% richiesto)");

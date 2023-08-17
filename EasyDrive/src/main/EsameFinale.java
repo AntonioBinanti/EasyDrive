@@ -9,39 +9,45 @@ public class EsameFinale extends Attività {
 	public EsameFinale(LocalDate data, LocalTime ora) {
 		super(data, ora);
 	}
-
-	@Override
-	public void prenotaCliente(Cliente c) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	/*public void promuoviCliente(String codiceFiscale) {
+	public void promuoviCliente(String codiceFiscale) {
 		Cliente c = this.elencoPrenotatiAttività.get(codiceFiscale);
 		if(c != null) {
-			c.setFoglioRosa(true);
+			c.setPatente(true);
 		}else {
-			System.out.println("Nessun cliente con il seguente codice fiscale era prenotato per l'esame teorico selezionato");
+			System.out.println("Nessun cliente con il seguente codice fiscale era prenotato per l'esame finale selezionato");
 		}
 	}
 	
 	public void prenotaCliente(Cliente c) {
-		float frequenza = c.getFrequenzaLezioni();
-		if(frequenza >= 70.0) {
-			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c); 
+		int numGuide= c.getNumeroGuide();
+		if(numGuide>=15) {
+			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c);
+			System.out.println("Il cliente " + c.getCognome() + " prenotato correttamente per l'esame finale");
 		}else {
-			System.out.println("Il cliente " + c.getCognome() + " non può essere prenotato per l'esame poichè ha una frequenza lezioni del "
-					+ c.getFrequenzaLezioni() + "(Minore del 70% richiesto)");
+			System.out.println("Il cliente " + c.getCognome() + " non può essere prenotato per l'esame poichè ha un numero di guide pari a "
+					+ c.getNumeroGuide() + " (Minore delle 15 richieste)");
 		}
 	}
 	
 	public void confermaEsiti() {
 		for (Map.Entry<String, Cliente> entry : elencoPrenotatiAttività.entrySet()) {
-            boolean f = entry.getValue().getFoglioRosa();
-            if(f == false) {
-            	entry.getValue().incrementaNumeroBocciature();
+            boolean p = entry.getValue().getPatente();
+            if(p == false) {
+            	int numBocciature=entry.getValue().incrementaNumeroBocciatureEsameFinale();
+            		if(numBocciature>=2) {
+            		entry.getValue().setFoglioRosa(false);
+            		entry.getValue().setNumeroGuide(0); 
+            	    }
             }
         }
-		System.out.println("Esiti esame teorico confermati");
-	}*/
+		System.out.println("Esiti esame finale confermati");
+	}
+
+	@Override
+	public String toString() {
+		return "EsameFinale [codice=" + codice + ", data=" + data + ", ora=" + ora + ", elencoPrenotatiAttività="
+				+ elencoPrenotatiAttività + "]";
+	}
+	
 }

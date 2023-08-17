@@ -274,6 +274,67 @@ public class EasyDrive {
 		}
 	}
 	
+	public void addEsameFinale(LocalDate data, LocalTime ora) {
+		Attività a = new EsameFinale(data, ora);
+		this.elencoAttività.put(a.getCodice(), a);
+		System.out.println("Esame finale fissato correttamente per la data: " + a.getData().toString() + " e ora: " + a.getOra().toString());
+	}
+	
+	public ArrayList<EsameFinale> prenotaEsameFinale() {
+		ArrayList<EsameFinale> esamiFinaliDisponibili = new ArrayList<>();
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof EsameFinale) {
+				if(entry.getValue().isDisponibile()){
+                esamiFinaliDisponibili.add((EsameFinale)entry.getValue());
+                }
+			}
+        }
+		return esamiFinaliDisponibili;
+	}
+	
+	public void confermaPrenotazioneEsameFinale() {
+		if(this.clienteCorrente != null && this.attivitàCorrente instanceof EsameFinale) {
+			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
+		}
+	}
+	
+	public ArrayList<EsameFinale> esitiEsameFinalePubblica() {
+		ArrayList<EsameFinale> esamiFinaliDisponibili = new ArrayList<>();
+		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
+			if(entry.getValue() instanceof EsameFinale) {
+				if(entry.getValue().isAntecedente() ){
+                esamiFinaliDisponibili.add((EsameFinale)entry.getValue());
+                }
+			} 
+        }
+		return esamiFinaliDisponibili;
+	}
+	
+	public HashMap<String, Cliente> esitiEsameFinaleSeleziona(LocalDate data, LocalTime ora){
+		this.attivitàCorrente = this.getAttività(data, ora);
+		if(this.attivitàCorrente != null) {
+			return this.attivitàCorrente.getElencoPrenotatiAttività();
+		}else {
+			return null;
+		}
+	}
+	
+	public void esitoEsameFinaleInserisciCliente(String codiceFiscale) {
+		if(this.attivitàCorrente != null && this.attivitàCorrente instanceof EsameFinale) {
+			EsameFinale a = (EsameFinale)this.attivitàCorrente;
+			a.promuoviCliente(codiceFiscale);
+		}else {
+			System.out.println("esame finale non selezionato");
+		}
+	}
+	
+	public void esitiEsameFinaleConferma() {
+		if(this.attivitàCorrente instanceof EsameFinale) {
+			EsameFinale e = (EsameFinale)this.attivitàCorrente;
+			e.confermaEsiti();
+		}
+	}
+	
 	public void loadArgomenti() {
 		Argomento a1 = new Argomento("Segnali di pericolo");
 		Argomento a2 = new Argomento("Segnali di divieto");
