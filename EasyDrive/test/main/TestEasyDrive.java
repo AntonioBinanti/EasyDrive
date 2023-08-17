@@ -427,7 +427,7 @@ public class TestEasyDrive {
 		easyDrive.addGuida(LocalDate.of(2022, 5, 14), LocalTime.of(20, 29));
 		easyDrive.addGuida(LocalDate.of(2013, 12, 1), LocalTime.of(05, 15));
 		
-		Map<String, Attività> a = easyDrive.getElencoAttività() ;
+		Map<String, Attività> a = easyDrive.getElencoAttività();
 		if(a.isEmpty()) {
 			System.out.println("Nessuna guida in lista");
 		}else {
