@@ -17,6 +17,8 @@ public class Cliente {
 	private boolean foglioRosa;
 	private int numeroBocciature;
 	private int numeroGuide;
+	private boolean patente;
+	private int numeroBocciatureEsameFinale;
 	
 	public Cliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono,
 			String email, String indirizzo) {
@@ -29,6 +31,8 @@ public class Cliente {
 		this.indirizzo = indirizzo;
 		this.argomentiSeguiti = new ArrayList<>();
 		this.frequenzaLezioni = 0;
+		this.patente=false;
+		this.numeroBocciatureEsameFinale=0;
 	}
 	
 	public void aggiornaFrequenzaLezioni(int numArgomentiSeguiti, int numArgomentiTotali) {
@@ -51,6 +55,7 @@ public class Cliente {
 	
 	public void incrementaNumeroBocciature() {
 		this.numeroBocciature ++;
+		System.out.println("Numero bocciature aggiornate");
 	}
 	
 	public void aggiornaNumeroGuide() {
@@ -58,6 +63,12 @@ public class Cliente {
 		System.out.println("Numero guide aggiornate");
 	}
 
+	public int incrementaNumeroBocciatureEsameFinale() {
+		this.numeroBocciatureEsameFinale ++;
+		System.out.println("Numero bocciature esame finale aggiornate");
+		return this.numeroBocciatureEsameFinale;
+	}
+	
 	public String getCodiceFiscale() {
 		return codiceFiscale;
 	}
@@ -154,13 +165,31 @@ public class Cliente {
 		this.numeroGuide = numeroGuide;
 	}
 
+	public boolean getPatente() {
+		return patente;
+	}
+
+	public void setPatente(boolean patente) {
+		this.patente = patente;
+	}
+
+	public int getNumeroBocciatureEsameFinale() {
+		return numeroBocciatureEsameFinale;
+	}
+
+	public void setNumeroBocciatureEsameFinale(int numeroBocciatureEsameFinale) {
+		this.numeroBocciatureEsameFinale = numeroBocciatureEsameFinale;
+	}
+
 	@Override
 	public String toString() {
 		return "Cliente [codiceFiscale=" + codiceFiscale + ", nome=" + nome + ", cognome=" + cognome + ", dataNascita="
 				+ dataNascita + ", numeroTelefono=" + numeroTelefono + ", email=" + email + ", indirizzo=" + indirizzo
 				+ ", frequenzaLezioni=" + frequenzaLezioni + ", argomentiSeguiti=" + argomentiSeguiti + ", foglioRosa="
-				+ foglioRosa + ", numeroBocciature=" + numeroBocciature + ", numeroGuide=" + numeroGuide + "]";
+				+ foglioRosa + ", numeroBocciature=" + numeroBocciature + ", numeroGuide=" + numeroGuide + ", patente="
+				+ patente + ", numeroBocciatureEsameFinale=" + numeroBocciatureEsameFinale + "]";
 	}
+
 	
 	
 }

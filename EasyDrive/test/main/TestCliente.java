@@ -69,4 +69,19 @@ public class TestCliente {
 		System.out.println("numero guide: " + c.getNumeroGuide());
 		assert c.getNumeroGuide() == 3;
 	}
+	
+	@Test
+	public void testIncrementaNumeroBocciatureEsameFinale() {
+		System.out.println("numero bocciature iniziali: " + c.getNumeroBocciatureEsameFinale());
+		assert c.getNumeroBocciatureEsameFinale() == 0;
+		c.incrementaNumeroBocciatureEsameFinale();
+		System.out.println("numero bocciature: " + c.getNumeroBocciatureEsameFinale());
+		assert c.getNumeroBocciatureEsameFinale() == 1;
+		c.incrementaNumeroBocciatureEsameFinale();
+		System.out.println("numero bocciature: " + c.getNumeroBocciatureEsameFinale());
+		assert c.getNumeroBocciatureEsameFinale() == 2;
+		c.incrementaNumeroBocciatureEsameFinale();
+		System.out.println("numero bocciature: " + c.getNumeroBocciatureEsameFinale());
+		assert c.getNumeroBocciatureEsameFinale() == 3;
+	}
 }
