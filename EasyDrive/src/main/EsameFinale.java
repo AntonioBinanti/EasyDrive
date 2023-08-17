@@ -10,16 +10,17 @@ public class EsameFinale extends Attività {
 		super(data, ora);
 	}
 	
-	public void promuoviCliente(String codiceFiscale) {
+	public void promuoviCliente(String codiceFiscale) throws Exception {
 		Cliente c = this.elencoPrenotatiAttività.get(codiceFiscale);
 		if(c != null) {
 			c.setPatente(true);
 		}else {
 			System.out.println("Nessun cliente con il seguente codice fiscale era prenotato per l'esame finale selezionato");
+			throw new Exception("Nessun cliente con il seguente codice fiscale era prenotato per l'esame finale selezionato");
 		}
 	}
 	
-	public void prenotaCliente(Cliente c) {
+	public void prenotaCliente(Cliente c) throws Exception {
 		int numGuide= c.getNumeroGuide();
 		if(numGuide>=15) {
 			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c);
@@ -27,6 +28,7 @@ public class EsameFinale extends Attività {
 		}else {
 			System.out.println("Il cliente " + c.getCognome() + " non può essere prenotato per l'esame poichè ha un numero di guide pari a "
 					+ c.getNumeroGuide() + " (Minore delle 15 richieste)");
+			throw new Exception("Il cliente non può essere prenotato per l'esame poichè ha un numero di guide minore delle 15 richieste");
 		}
 	}
 	

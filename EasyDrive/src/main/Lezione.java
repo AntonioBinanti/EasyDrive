@@ -9,13 +9,11 @@ import java.util.Date;
 public class Lezione {
 	
 	private String codice;
-	/*private Date data;
-	private Time ora;*/
 	private LocalDate data;
 	private LocalTime ora;
 	private Argomento argomentoTrattato;
 	
-	public Lezione(/*Date data, Time ora*/ LocalDate data, LocalTime ora, Argomento argomentoTrattato) {	
+	public Lezione(LocalDate data, LocalTime ora, Argomento argomentoTrattato) {	
 		this.data = data;
 		this.ora = ora;
 		this.argomentoTrattato = argomentoTrattato;

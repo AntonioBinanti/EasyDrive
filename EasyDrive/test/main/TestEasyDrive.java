@@ -3,10 +3,12 @@ package main;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -31,6 +33,8 @@ public class TestEasyDrive {
 	@After
 	public void clearTest() {
 		easyDrive.setClienteCorrente(null);
+		easyDrive.setAttivitàCorrente(null);
+		easyDrive.setLezioneCorrente(null);
 	}
 	
 	@Test
@@ -52,81 +56,109 @@ public class TestEasyDrive {
 	@Test
 	public void testRemoveCliente() {
 		//Il cliente presente in listaClienti viene rimosso sè trovato
-		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
-				"via Rossi 25");
-		easyDrive.removeCliente("AR202051");
-		assertNull(easyDrive.getCliente("AR202051"));
+		try {
+			easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+					"via Rossi 25");
+			easyDrive.removeCliente("AR202051");
+			assertNull(easyDrive.getCliente("AR202051"));
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessun cliente trovato con il codice fiscale selezionato");
+		}
 		//Se easyDrive non trova il cliente in listaClienti avverte l'amministratore
-		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
-				"via Rossi 25");
-		easyDrive.removeCliente("MR5181515");
-		assertNotNull(easyDrive.getCliente("AR202051"));
+		try {
+			easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+					"via Rossi 25");
+			easyDrive.removeCliente("MR5181515");
+			assertNotNull(easyDrive.getCliente("AR202051"));
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Impossibile rimuovere il cliente con il codice fiscale selezionato");
+		}
+		
 	}
 	
 	@Test
 	public void testAddLezione() {
-		ArrayList<Argomento> listaArgomenti = easyDrive.getListaArgomenti();
-		/*easyDrive.addLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"), listaArgomenti.get(1));
-		easyDrive.addLezione(Date.valueOf("2023-3-5"), Time.valueOf("13:45:00"), listaArgomenti.get(2));
-		easyDrive.addLezione(Date.valueOf("2023-3-14"), Time.valueOf("18:00:00"), listaArgomenti.get(3));*/
-		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), listaArgomenti.get(1));
-		easyDrive.addLezione(LocalDate.of(2023, 3, 5), LocalTime.of(13,45), listaArgomenti.get(2));
-		easyDrive.addLezione(LocalDate.of(2023, 3, 14), LocalTime.of(18, 00), listaArgomenti.get(3));
-		Map<String, Lezione> l = easyDrive.getElencoLezioni();
-		if(l.isEmpty()) {
-			System.out.println("Nessuna lezione in lista");
-		}else {
-			for(Lezione lez : l.values()) {
-			System.out.println(lez);
+		try {
+			ArrayList<Argomento> listaArgomenti = easyDrive.getListaArgomenti();
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), listaArgomenti.get(1));
+			easyDrive.addLezione(LocalDate.of(2023, 3, 5), LocalTime.of(13,45), listaArgomenti.get(2));
+			easyDrive.addLezione(LocalDate.of(2023, 3, 14), LocalTime.of(18, 00), listaArgomenti.get(3));
+			Map<String, Lezione> l = easyDrive.getElencoLezioni();
+			if(l.isEmpty()) {
+				System.out.println("Nessuna lezione in lista");
+			}else {
+				for(Lezione lez : l.values()) {
+				System.out.println(lez);
+				}
 			}
+			assertNull(easyDrive.getLezione(LocalDate.of(2013, 3, 5), LocalTime.of(13, 45)));
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessuna lezione trovata con la data e ora selezionate");
 		}
-		//assertNull(easyDrive.getLezione(Date.valueOf("2013-3-5"), Time.valueOf("13:45:00")));
-		assertNull(easyDrive.getLezione(LocalDate.of(2013, 3, 5), LocalTime.of(13, 45)));
-		/*Lezione l1 = easyDrive.getLezione(Date.valueOf("2013-3-5"), Time.valueOf("13:45:00"));
-		System.out.println("Lezione selezionata= " + l1.toString());*/
 	}
 	
 	@Test
 	public void testRemoveLezione() {
 		//La lezione presente in elencoLezioni viene rimossa sè trovata
-		/*easyDrive.addLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"), easyDrive.getListaArgomenti().get(0));
-		easyDrive.removeLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00"));*/
-		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
-		easyDrive.removeLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
-		//assertNull(easyDrive.getLezione(Date.valueOf("2023-2-28"), Time.valueOf("20:52:00")));
-		assertNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+		try {
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
+			easyDrive.removeLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+			assertNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+		}catch(Exception e){
+			assertEquals(e.getMessage(),"Nessuna lezione trovata con la data e ora selezionate");
+		}
 		//Se easyDrive non trova la lezione in elencoLezioni avverte l'amministratore
-		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
-		easyDrive.removeLezione(LocalDate.of(2023, 2, 27), LocalTime.of(20, 52)); //La data selezionata non esiste in elenco
-		assertNotNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+		try {
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
+			easyDrive.removeLezione(LocalDate.of(2023, 2, 27), LocalTime.of(20, 52)); //La data selezionata non esiste in elenco
+			assertNotNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Impossibile rimuovere la lezione con la data e l'ora selezionate");
+		}
 	}
 	
 	@Test
 	public void testAggiornaFrequenzaClienti() {
-		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
-		//La lezione selezionata diventa corrente in easyDrive
-		easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
-		assertNotNull(easyDrive.getLezioneCorrente());
+		try {
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
+			//La lezione selezionata diventa corrente in easyDrive
+			easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+			assertNotNull(easyDrive.getLezioneCorrente());
+		}catch(Exception e) {
+			fail("Unexpected exception");
+		}
 	}
 	
 	@Test
 	public void testInserisciClienteFrequentante() {
-		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
-		easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
-				"via Rossi 25");
+		try {
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
+			easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+					"via Rossi 25");
+		}catch(Exception e) {
+			fail("Unexpected exception");
+		}		
 		//Il cliente selezionato diventa corrente se esiste una lezione corrente
-		easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
-		assertNotNull(easyDrive.getLezioneCorrente());
-		easyDrive.inserisciClienteFrequentante("AR202051");
-		assertNotNull(easyDrive.getClienteCorrente());
+		try {
+			easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+			assertNotNull(easyDrive.getLezioneCorrente());
+			easyDrive.inserisciClienteFrequentante("AR202051");
+			assertNotNull(easyDrive.getClienteCorrente());
+		}catch(Exception e) {
+			fail("Unexpected exception");
+		}		
 		//Il cliente selezionato non diventa corrente se non esiste una lezione corrente
-		easyDrive.setClienteCorrente(null);
-		easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 3, 1), LocalTime.of(20, 52)); //La data della lezione non è inserita in elencoLezioni
-		assertNull(easyDrive.getLezioneCorrente());
-		easyDrive.inserisciClienteFrequentante("AR202051");
-		assertNull(easyDrive.getClienteCorrente());
+		try {
+			easyDrive.setClienteCorrente(null);
+			easyDrive.aggiornaFrequenzaClienti(LocalDate.of(2023, 3, 1), LocalTime.of(20, 52)); //La data della lezione non è inserita in elencoLezioni
+			assertNull(easyDrive.getLezioneCorrente());
+			easyDrive.inserisciClienteFrequentante("AR202051");
+			assertNull(easyDrive.getClienteCorrente());
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessuna lezione selezionata");
+		}
 	}
-	
+	//////////////////////////////CONTINUARE DA QUI
 	@Test
 	public void testConfermaInserimento() {
 		easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
@@ -639,7 +671,7 @@ public class TestEasyDrive {
 		easyDrive.prenotaEsameFinale();
 		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
 		easyDrive.inserisciCliente("AR202051");
-		//se il cliente non ha un numero di guide sufficienti, non potrà essere prenotato per l'esame finale
+		//se il cliente non ha ne un numero di guide sufficienti ne il foglio rosa, non potrà essere prenotato per l'esame finale
 		easyDrive.prenotaEsameFinale();
 		easyDrive.selezionaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
 		easyDrive.inserisciCliente("AR202051");
@@ -667,7 +699,7 @@ public class TestEasyDrive {
 	@Test
 	public void testEsitiEsameFinalePubblica() {
 		easyDrive.addEsameFinale(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)); 
-		easyDrive.addEsameFinale(LocalDate.of(2024, 5, 18), LocalTime.of(20, 52)); //Esame finale con data non antecedente, non verrà inserito nella lista "esamiTeoriciDisponibili"
+		easyDrive.addEsameFinale(LocalDate.of(2024, 5, 18), LocalTime.of(20, 52)); //Esame finale con data non antecedente, non verrà inserito nella lista "esamiFinaliDisponibili"
 		easyDrive.addEsameFinale(LocalDate.of(2023, 7, 20), LocalTime.of(20, 52));
 		ArrayList<EsameFinale> esamiFinaliDisponibili = new ArrayList<>();
 		esamiFinaliDisponibili = easyDrive.esitiEsameFinalePubblica();
@@ -819,4 +851,3 @@ public class TestEasyDrive {
 		}
 	}
 }
-

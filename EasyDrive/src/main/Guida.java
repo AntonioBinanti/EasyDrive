@@ -10,11 +10,12 @@ public class Guida extends Attività{
 	}
 
 	@Override
-	public void prenotaCliente(Cliente c) {
+	public void prenotaCliente(Cliente c) throws Exception {
 		if(c.getFoglioRosa()) {
 			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c);
 		}else {
 			System.out.println("Il cliente " + c.getNome() + " " + c.getCognome() + " non può essere prenotato poichè non ha ancora superato l'esame teorico");
+			throw new Exception("Il cliente non può essere prenotato poichè non ha ancora superato l'esame teorico");
 		}
 	}
 

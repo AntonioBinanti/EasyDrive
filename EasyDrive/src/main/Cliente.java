@@ -39,7 +39,7 @@ public class Cliente {
 		this.frequenzaLezioni = (float) numArgomentiSeguiti/numArgomentiTotali*100;
 	}
 	
-	public void incrementaFrequenzaLezioni(Argomento argomento, int numArgomentiTotali) {
+	public void incrementaFrequenzaLezioni(Argomento argomento, int numArgomentiTotali) throws Exception {
 		boolean b;
 		int numArgomentiSeguiti;
 		b= this.argomentiSeguiti.contains(argomento);
@@ -50,6 +50,7 @@ public class Cliente {
 			System.out.println("La frequenza lezioni è stata aggiornata"); // la frequenza viene aggiornata solo se l'argomento non è stato seguito
 		}else {
 			System.out.println("L'argomento: " + argomento.getDescrizione() + " è stato già seguito, la frequenza lezioni non è stata aggiornata");
+			throw new Exception("L'argomento è stato già seguito, la frequenza lezioni non è stata aggiornata");
 		}
 	}
 	

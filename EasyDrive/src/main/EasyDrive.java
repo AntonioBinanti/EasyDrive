@@ -47,66 +47,67 @@ public class EasyDrive {
 		System.out.println("Cliente "+ c.getNome() + " " + c.getCognome() + " inserito correttamente");
 	}
 	
-	public Cliente getCliente(String codiceFiscale) {
+	public Cliente getCliente(String codiceFiscale) throws Exception {
 		Cliente c = this.listaClienti.get(codiceFiscale);
 		if(c == null) {
 			System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
-			return null;
+			throw new Exception("Nessun cliente trovato con il codice fiscale selezionato");
 		}else {
 		return c;
 		}
 	}
 	
-	public void removeCliente(String codiceFiscale) {
+	public void removeCliente(String codiceFiscale) throws Exception {
 		if(this.listaClienti.remove(codiceFiscale) != null){
 			System.out.println("Cliente eliminato correttamente");
 		}else {
 			System.out.println("Impossibile rimuovere il cliente con il codice fiscale selezionato");
+			throw new Exception("Impossibile rimuovere il cliente con il codice fiscale selezionato");
 		}
 	}
 	
-	public void addLezione(/*Date data, Time ora*/ LocalDate data, LocalTime ora, Argomento argomentoTrattato) {
-		Lezione l = new Lezione(/*data, ora*/ data, ora, argomentoTrattato);
+	public void addLezione(LocalDate data, LocalTime ora, Argomento argomentoTrattato) {
+		Lezione l = new Lezione(data, ora, argomentoTrattato);
 		this.elencoLezioni.put(l.getCodice(), l);
 		System.out.println("Lezione inserita correttamente in data: " + l.getData().toString() + " e ora: " + l.getOra().toString());
 	}
 	
-	public Lezione getLezione(LocalDate data, LocalTime ora) {
-		//String dataOra = data.toString() + ora.toString();
+	public Lezione getLezione(LocalDate data, LocalTime ora) throws Exception {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		if(l == null) {
 			System.out.println("Nessuna lezione trovata con la data e ora selezionate");
-			return null;
+			throw new Exception("Nessuna lezione trovata con la data e ora selezionate");
 		}else {
 		return l;
 		}
 	}
 	
-	public void removeLezione(LocalDate data, LocalTime ora) {
-		//String dataOra = data.toString() + ora.toString();
+	public void removeLezione(LocalDate data, LocalTime ora) throws Exception {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		if(this.elencoLezioni.remove(dataOra) != null) {
 			System.out.println("Lezione eliminata correttamente");
 		}else {
 			System.out.println("Impossibile rimuovere la lezione con la data e l'ora selezionate");
+			throw new Exception("Impossibile rimuovere la lezione con la data e l'ora selezionate");
 		}
 	}
 	
-	public void aggiornaFrequenzaClienti(LocalDate data, LocalTime ora) {
-		//String dataOra = data.toString() + ora.toString();
+	public void aggiornaFrequenzaClienti(LocalDate data, LocalTime ora){
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		lezioneCorrente = l;
 	}
 	
-	public void inserisciClienteFrequentante(String codiceFiscale) {
+	public void inserisciClienteFrequentante(String codiceFiscale) throws Exception {
 		if(this.lezioneCorrente != null) {
 			this.clienteCorrente = this.listaClienti.get(codiceFiscale);
-		}	
+		}else {
+			throw new Exception("Nessuna lezione selezionata");
+		}
 	}
 	
-	public void confermaInserimento() {
+	public void confermaInserimento() throws Exception {
 		if(this.clienteCorrente != null) {
 			Argomento argomento = this.lezioneCorrente.getArgomentoTrattato();
 			int numArgomentiTotali = this.listaArgomenti.size();
@@ -120,23 +121,24 @@ public class EasyDrive {
 		System.out.println("Esame teorico fissato correttamente per la data: " + a.getData().toString() + " e ora: " + a.getOra().toString());
 	}
 	
-	public Attività getAttività(LocalDate data, LocalTime ora) {
+	public Attività getAttività(LocalDate data, LocalTime ora) throws Exception {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		Attività a = this.elencoAttività.get(dataOra);
 		if(a == null) {
 			System.out.println("Nessuna attività trovata con la data e ora selezionate");
-			return null;
+			throw new Exception("Nessuna attività trovata con la data e ora selezionate");
 		}else {
 		return a;
 		}
 	}
 	
-	public void removeAttività(LocalDate data, LocalTime ora) {
+	public void removeAttività(LocalDate data, LocalTime ora) throws Exception {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		if(this.elencoAttività.remove(dataOra) != null) {
 			System.out.println("Attività eliminata correttamente");
 		}else {
 			System.out.println("Impossibile rimuovere l'attività con la data e l'ora selezionate");
+			throw new Exception("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 		}
 	}
 	
@@ -152,17 +154,17 @@ public class EasyDrive {
 		return esamiTeoriciDisponibili;
 	}
 	
-	public void selezionaAttività(LocalDate data, LocalTime ora) {
+	public void selezionaAttività(LocalDate data, LocalTime ora) throws Exception {
 		this.attivitàCorrente = this.getAttività(data, ora);
 	}
 	
-	public void inserisciCliente(String codiceFiscale) {
+	public void inserisciCliente(String codiceFiscale) throws Exception {
 		if(this.attivitàCorrente != null) {
 			this.clienteCorrente = this.getCliente(codiceFiscale);
 		}
 	}
 	
-	public void confermaPrenotazioneEsameTeorico() {
+	public void confermaPrenotazioneEsameTeorico() throws Exception {
 		if(this.clienteCorrente != null && this.attivitàCorrente instanceof EsameTeorico) {
 			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
 		}
@@ -180,7 +182,7 @@ public class EasyDrive {
 		return esamiTeoriciDisponibili;
 	}
 	
-	public HashMap<String, Cliente> esitiEsameTeoricoSeleziona(LocalDate data, LocalTime ora){
+	public HashMap<String, Cliente> esitiEsameTeoricoSeleziona(LocalDate data, LocalTime ora) throws Exception{
 		this.attivitàCorrente = this.getAttività(data, ora);
 		if(this.attivitàCorrente != null) {
 			return this.attivitàCorrente.getElencoPrenotatiAttività();
@@ -189,12 +191,13 @@ public class EasyDrive {
 		}
 	}
 	
-	public void esitoEsameTeoricoInserisciCliente(String codiceFiscale) {
+	public void esitoEsameTeoricoInserisciCliente(String codiceFiscale) throws Exception {
 		if(this.attivitàCorrente != null && this.attivitàCorrente instanceof EsameTeorico) {
 			EsameTeorico a = (EsameTeorico)this.attivitàCorrente;
 			a.promuoviCliente(codiceFiscale);
 		}else {
 			System.out.println("esame teorico non selezionato");
+			throw new Exception("esame teorico non selezionato");
 		}
 	}
 	
@@ -235,7 +238,7 @@ public class EasyDrive {
 		return guideDisponibili;
 	}
 	
-	public void confermaPrenotazioneGuida() {
+	public void confermaPrenotazioneGuida() throws Exception {
 		if(this.clienteCorrente != null && this.attivitàCorrente instanceof Guida) {
 			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
 			}
@@ -253,7 +256,7 @@ public class EasyDrive {
 		return guideDisponibili;
 	}
 	
-	public HashMap<String, Cliente> selezionaGuida(LocalDate data, LocalTime ora){
+	public HashMap<String, Cliente> selezionaGuida(LocalDate data, LocalTime ora) throws Exception{
 		this.attivitàCorrente = this.getAttività(data, ora);
 		if(this.attivitàCorrente != null) {
 			return this.attivitàCorrente.getElencoPrenotatiAttività();
@@ -262,7 +265,7 @@ public class EasyDrive {
 		}
 	}
 	
-	public void aggiornaGuideInserisciCliente(String codiceFiscale) {
+	public void aggiornaGuideInserisciCliente(String codiceFiscale) throws Exception {
 		if(this.attivitàCorrente != null) {
 			this.clienteCorrente = this.getCliente(codiceFiscale);
 		}
@@ -292,7 +295,7 @@ public class EasyDrive {
 		return esamiFinaliDisponibili;
 	}
 	
-	public void confermaPrenotazioneEsameFinale() {
+	public void confermaPrenotazioneEsameFinale() throws Exception {
 		if(this.clienteCorrente != null && this.attivitàCorrente instanceof EsameFinale) {
 			this.attivitàCorrente.prenotaCliente(this.clienteCorrente);
 		}
@@ -310,7 +313,7 @@ public class EasyDrive {
 		return esamiFinaliDisponibili;
 	}
 	
-	public HashMap<String, Cliente> esitiEsameFinaleSeleziona(LocalDate data, LocalTime ora){
+	public HashMap<String, Cliente> esitiEsameFinaleSeleziona(LocalDate data, LocalTime ora) throws Exception{
 		this.attivitàCorrente = this.getAttività(data, ora);
 		if(this.attivitàCorrente != null) {
 			return this.attivitàCorrente.getElencoPrenotatiAttività();
@@ -319,12 +322,13 @@ public class EasyDrive {
 		}
 	}
 	
-	public void esitoEsameFinaleInserisciCliente(String codiceFiscale) {
+	public void esitoEsameFinaleInserisciCliente(String codiceFiscale) throws Exception {
 		if(this.attivitàCorrente != null && this.attivitàCorrente instanceof EsameFinale) {
 			EsameFinale a = (EsameFinale)this.attivitàCorrente;
 			a.promuoviCliente(codiceFiscale);
 		}else {
 			System.out.println("esame finale non selezionato");
+			throw new Exception("esame finale non selezionato");
 		}
 	}
 	

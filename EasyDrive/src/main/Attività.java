@@ -25,7 +25,7 @@ public abstract class Attività {
         return dateTime.isAfter(dateTimeCorrente); 
 	}
 	
-	public abstract void prenotaCliente(Cliente c);
+	public abstract void prenotaCliente(Cliente c) throws Exception;
 	
 	public boolean isAntecedente() {
 		LocalDateTime dateTime = LocalDateTime.of(this.data, this.ora);
