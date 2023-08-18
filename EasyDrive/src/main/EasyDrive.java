@@ -112,7 +112,7 @@ public class EasyDrive {
 			Argomento argomento = this.lezioneCorrente.getArgomentoTrattato();
 			int numArgomentiTotali = this.listaArgomenti.size();
 			this.clienteCorrente.incrementaFrequenzaLezioni(argomento, numArgomentiTotali);
-		}
+		}else throw new Exception("Nessun cliente selezionato");
 	}
 	
 	public void addEsameTeorico(LocalDate data, LocalTime ora) {
