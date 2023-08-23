@@ -50,7 +50,7 @@ public class EasyDrive {
 	public Cliente getCliente(String codiceFiscale) throws Exception {
 		Cliente c = this.listaClienti.get(codiceFiscale);
 		if(c == null) {
-			System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
+			//System.out.println("Nessun cliente trovato con il codice fiscale selezionato");
 			throw new Exception("Nessun cliente trovato con il codice fiscale selezionato");
 		}else {
 		return c;
@@ -61,7 +61,7 @@ public class EasyDrive {
 		if(this.listaClienti.remove(codiceFiscale) != null){
 			System.out.println("Cliente eliminato correttamente");
 		}else {
-			System.out.println("Impossibile rimuovere il cliente con il codice fiscale selezionato");
+			//System.out.println("Impossibile rimuovere il cliente con il codice fiscale selezionato");
 			throw new Exception("Impossibile rimuovere il cliente con il codice fiscale selezionato");
 		}
 	}
@@ -76,7 +76,7 @@ public class EasyDrive {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		Lezione l = this.elencoLezioni.get(dataOra);
 		if(l == null) {
-			System.out.println("Nessuna lezione trovata con la data e ora selezionate");
+			//System.out.println("Nessuna lezione trovata con la data e ora selezionate");
 			throw new Exception("Nessuna lezione trovata con la data e ora selezionate");
 		}else {
 		return l;
@@ -88,7 +88,7 @@ public class EasyDrive {
 		if(this.elencoLezioni.remove(dataOra) != null) {
 			System.out.println("Lezione eliminata correttamente");
 		}else {
-			System.out.println("Impossibile rimuovere la lezione con la data e l'ora selezionate");
+			//System.out.println("Impossibile rimuovere la lezione con la data e l'ora selezionate");
 			throw new Exception("Impossibile rimuovere la lezione con la data e l'ora selezionate");
 		}
 	}
@@ -125,7 +125,7 @@ public class EasyDrive {
 		String dataOra = LocalDateTime.of(data, ora).toString();
 		Attività a = this.elencoAttività.get(dataOra);
 		if(a == null) {
-			System.out.println("Nessuna attività trovata con la data e ora selezionate");
+			//System.out.println("Nessuna attività trovata con la data e ora selezionate");
 			throw new Exception("Nessuna attività trovata con la data e ora selezionate");
 		}else {
 		return a;
@@ -137,7 +137,7 @@ public class EasyDrive {
 		if(this.elencoAttività.remove(dataOra) != null) {
 			System.out.println("Attività eliminata correttamente");
 		}else {
-			System.out.println("Impossibile rimuovere l'attività con la data e l'ora selezionate");
+			//System.out.println("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 			throw new Exception("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 		}
 	}
@@ -196,7 +196,7 @@ public class EasyDrive {
 			EsameTeorico a = (EsameTeorico)this.attivitàCorrente;
 			a.promuoviCliente(codiceFiscale);
 		}else {
-			System.out.println("esame teorico non selezionato");
+			//System.out.println("esame teorico non selezionato");
 			throw new Exception("esame teorico non selezionato");
 		}
 	}
@@ -327,7 +327,7 @@ public class EasyDrive {
 			EsameFinale a = (EsameFinale)this.attivitàCorrente;
 			a.promuoviCliente(codiceFiscale);
 		}else {
-			System.out.println("esame finale non selezionato");
+			//System.out.println("esame finale non selezionato");
 			throw new Exception("esame finale non selezionato");
 		}
 	}
