@@ -1,11 +1,10 @@
 package main;
 
-import java.sql.Time;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +29,9 @@ public class EasyDrive {
 		this.elencoAttività = new HashMap<>();
 		this.listaBocciatiDebitori = new HashMap<>();
 		loadArgomenti();
+		loadLezioni();
+		loadClienti();
+		loadAttività();
 	}
 	
 	public static EasyDrive getInstance() {
@@ -41,7 +43,7 @@ public class EasyDrive {
 		return easyDrive;
 	}
 	
-	public void addCliente(String codiceFiscale, String nome, String cognome, Date dataNascita, String numeroTelefono, String email, String indirizzo) {
+	public void addCliente(String codiceFiscale, String nome, String cognome, java.util.Date dataNascita, String numeroTelefono, String email, String indirizzo) {
 		Cliente c = new Cliente(codiceFiscale, nome, cognome, dataNascita, numeroTelefono, email, indirizzo);
 		this.listaClienti.put(codiceFiscale, c);
 		System.out.println("Cliente "+ c.getNome() + " " + c.getCognome() + " inserito correttamente");
@@ -142,7 +144,7 @@ public class EasyDrive {
 		}
 	}
 	
-	public ArrayList<EsameTeorico> prenotaEsameTeorico() {
+	public ArrayList<EsameTeorico> prenotaEsameTeorico() throws Exception {
 		ArrayList<EsameTeorico> esamiTeoriciDisponibili = new ArrayList<>();
 		for (Map.Entry<String, Attività> entry : elencoAttività.entrySet()) {
 			if(entry.getValue() instanceof EsameTeorico) {
@@ -151,6 +153,9 @@ public class EasyDrive {
                 }
 			}
         }
+		if(esamiTeoriciDisponibili.isEmpty()) {
+			throw new Exception("Nessun esame teorico disponibile");
+		}
 		return esamiTeoriciDisponibili;
 	}
 	
@@ -361,6 +366,60 @@ public class EasyDrive {
 		this.listaArgomenti.add(a9);
 		this.listaArgomenti.add(a10);
 		System.out.println("Caricamento argomenti completato");
+	}
+	
+	public void loadLezioni() {
+		Lezione l1 = new Lezione(LocalDate.of(2023, 4, 15), LocalTime.of(10, 00), this.listaArgomenti.get(1));
+		Lezione l2 = new Lezione(LocalDate.of(2022, 12, 20), LocalTime.of(11, 00), this.listaArgomenti.get(2));
+		Lezione l3 = new Lezione(LocalDate.of(2023, 1, 10), LocalTime.of(18, 00), this.listaArgomenti.get(3));
+		this.elencoLezioni.put(l1.getCodice(), l1);
+		this.elencoLezioni.put(l2.getCodice(), l2);
+		this.elencoLezioni.put(l3.getCodice(), l3);
+		System.out.println("Caricamento lezioni completato");
+	}
+	
+	public void loadClienti() {
+		Cliente c1 = new Cliente("MV155489", "Mario", "Verdi", Date.valueOf("2000-1-1"), "0951616161", "Mario.Verdi@gmail.com", 
+				"via Rossi 25");
+		Cliente c2 = new Cliente("SB159546", "Sergio", "Bianchi", Date.valueOf("2000-1-1"), "0951616161", "Sergio.Bianchi@gmail.com", 
+				"via Rossi 25");
+		Cliente c3 = new Cliente("AV159875", "Alex", "Viola", Date.valueOf("2000-1-1"), "0951616161", "Alex.Viola@gmail.com", 
+				"via Rossi 25");
+		Cliente c4 = new Cliente("MR457800", "Marta", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Marta.Rossi@gmail.com", 
+				"via Rossi 25");
+		c1.setArgomentiSeguiti(this.listaArgomenti);
+		c1.setFoglioRosa(true);
+		c3.setArgomentiSeguiti(this.listaArgomenti);
+		c3.setFoglioRosa(true);
+		c3.setNumeroGuide(16);
+		c4.setFrequenzaLezioni(90);
+		this.listaClienti.put(c1.getCodiceFiscale(), c1); //ha foglio rosa ma 0 guide, può prenotarsi a guide
+		this.listaClienti.put(c2.getCodiceFiscale(), c2); //non ha frequentato nessuna lezione
+		this.listaClienti.put(c3.getCodiceFiscale(), c3); //ha fatto tutte le guide, può prenotarsi all'esame finale
+		this.listaClienti.put(c4.getCodiceFiscale(), c4); //ha seguito quasi tutte le lezioni, può prenotarsi all' esame teorico
+		System.out.println("Caricamento clienti completato");
+	}
+	
+	public void loadAttività() {
+		Attività t1 = new EsameTeorico(LocalDate.of(2023, 5, 10), LocalTime.of(20, 30));
+		Attività t2 = new EsameTeorico(LocalDate.of(2022, 12, 14), LocalTime.of(10, 00));
+		Attività t3 = new EsameTeorico(LocalDate.of(2024, 12, 1), LocalTime.of(10, 00));
+		Attività f1 = new EsameFinale(LocalDate.of(2023, 4, 12), LocalTime.of(20, 29));
+		Attività f2 = new EsameFinale(LocalDate.of(2022, 12, 20), LocalTime.of(20, 29));
+		Attività f3 = new EsameFinale(LocalDate.of(2024, 12, 16), LocalTime.of(05, 15));
+		Attività g1 = new Guida(LocalDate.of(2023, 4, 10), LocalTime.of(20, 29));
+		Attività g2 = new Guida(LocalDate.of(2022, 12, 10), LocalTime.of(20, 29));
+		Attività g3 = new Guida(LocalDate.of(2024, 12, 3), LocalTime.of(05, 15));
+		this.elencoAttività.put(t1.getCodice(), t1);
+		this.elencoAttività.put(t2.getCodice(), t2);
+		this.elencoAttività.put(t3.getCodice(), t3);
+		this.elencoAttività.put(f1.getCodice(), f1);
+		this.elencoAttività.put(f2.getCodice(), f2);
+		this.elencoAttività.put(f3.getCodice(), f3);
+		this.elencoAttività.put(g1.getCodice(), g1);
+		this.elencoAttività.put(g2.getCodice(), g2);
+		this.elencoAttività.put(g3.getCodice(), g3);
+		System.out.println("Caricamento attività completato");
 	}
 
 	public HashMap<String, Lezione> getElencoLezioni() {
