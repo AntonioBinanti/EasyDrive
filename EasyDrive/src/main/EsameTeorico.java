@@ -48,6 +48,7 @@ public class EsameTeorico extends Attività{
 
 	@Override
 	public String toString() {
-		return "EsameTeorico [codice=" + codice + ", data=" + data + ", ora=" + ora + "]";
+		return "EsameTeorico [codice=" + codice + ", data=" + data + ", ora=" + ora + ", elencoPrenotatiAttività="
+				+ elencoPrenotatiAttività + "]";
 	}
 }

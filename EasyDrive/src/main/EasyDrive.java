@@ -71,7 +71,7 @@ public class EasyDrive {
 	public void addLezione(LocalDate data, LocalTime ora, Argomento argomentoTrattato) {
 		Lezione l = new Lezione(data, ora, argomentoTrattato);
 		this.elencoLezioni.put(l.getCodice(), l);
-		System.out.println("Lezione inserita correttamente in data: " + l.getData().toString() + " e ora: " + l.getOra().toString());
+		System.out.println("Lezione inserita correttamente in data: " + l.getData().toString() + ", ora: " + l.getOra().toString() + " e argomento trattato: " + l.getArgomentoTrattato().getDescrizione().toString());
 	}
 	
 	public Lezione getLezione(LocalDate data, LocalTime ora) throws Exception {
@@ -387,16 +387,29 @@ public class EasyDrive {
 				"via Rossi 25");
 		Cliente c4 = new Cliente("MR457800", "Marta", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Marta.Rossi@gmail.com", 
 				"via Rossi 25");
+		Cliente c5 = new Cliente("MB179300", "Michelle", "Blu", Date.valueOf("2000-1-1"), "0951616161", "Michelle.Blu@gmail.com", 
+				"via Rossi 25");
 		c1.setArgomentiSeguiti(this.listaArgomenti);
 		c1.setFoglioRosa(true);
+		c1.setFrequenzaLezioni(100);
 		c3.setArgomentiSeguiti(this.listaArgomenti);
+		c3.setFrequenzaLezioni(100);
 		c3.setFoglioRosa(true);
 		c3.setNumeroGuide(16);
-		c4.setFrequenzaLezioni(90);
+		ArrayList<Argomento> lista = new ArrayList();
+		lista.add(this.listaArgomenti.get(0));
+		lista.add(this.listaArgomenti.get(1));
+		c4.setArgomentiSeguiti(lista);
+		c4.setFrequenzaLezioni(80);
+		c5.setArgomentiSeguiti(this.listaArgomenti);
+		c5.setFrequenzaLezioni(100);
+		c5.setFoglioRosa(true);
+		c5.setNumeroGuide(20);
 		this.listaClienti.put(c1.getCodiceFiscale(), c1); //ha foglio rosa ma 0 guide, può prenotarsi a guide
 		this.listaClienti.put(c2.getCodiceFiscale(), c2); //non ha frequentato nessuna lezione
 		this.listaClienti.put(c3.getCodiceFiscale(), c3); //ha fatto tutte le guide, può prenotarsi all'esame finale
 		this.listaClienti.put(c4.getCodiceFiscale(), c4); //ha seguito quasi tutte le lezioni, può prenotarsi all' esame teorico
+		this.listaClienti.put(c5.getCodiceFiscale(), c5); //ha fatto tutte le guide, può prenotarsi all'esame finale
 		System.out.println("Caricamento clienti completato");
 	}
 	
@@ -410,6 +423,14 @@ public class EasyDrive {
 		Attività g1 = new Guida(LocalDate.of(2023, 4, 10), LocalTime.of(20, 29));
 		Attività g2 = new Guida(LocalDate.of(2022, 12, 10), LocalTime.of(20, 29));
 		Attività g3 = new Guida(LocalDate.of(2024, 12, 3), LocalTime.of(05, 15));
+		t1.getElencoPrenotatiAttività().put("MR457800", this.listaClienti.get("MR457800"));
+		t2.getElencoPrenotatiAttività().put("MR457800", this.listaClienti.get("MR457800"));
+		f1.getElencoPrenotatiAttività().put("AV159875", this.listaClienti.get("AV159875"));
+		f2.getElencoPrenotatiAttività().put("AV159875", this.listaClienti.get("AV159875"));
+		g1.getElencoPrenotatiAttività().put("AV159875", this.listaClienti.get("AV159875"));
+		g2.getElencoPrenotatiAttività().put("AV159875", this.listaClienti.get("AV159875"));
+		g1.getElencoPrenotatiAttività().put("MB179300", this.listaClienti.get("MB179300"));
+		g2.getElencoPrenotatiAttività().put("MB179300", this.listaClienti.get("MB179300"));
 		this.elencoAttività.put(t1.getCodice(), t1);
 		this.elencoAttività.put(t2.getCodice(), t2);
 		this.elencoAttività.put(t3.getCodice(), t3);

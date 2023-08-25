@@ -13,6 +13,7 @@ public class Guida extends Attività{
 	public void prenotaCliente(Cliente c) throws Exception {
 		if(c.getFoglioRosa()) {
 			this.elencoPrenotatiAttività.put(c.getCodiceFiscale(), c);
+			System.out.println("Il cliente " + c.getCognome() + " prenotato correttamente per la guida");
 		}else {
 			System.out.println("Il cliente " + c.getNome() + " " + c.getCognome() + " non può essere prenotato poichè non ha ancora superato l'esame teorico");
 			throw new Exception("Il cliente non può essere prenotato poichè non ha ancora superato l'esame teorico");
@@ -21,6 +22,9 @@ public class Guida extends Attività{
 
 	@Override
 	public String toString() {
-		return "Guida [codice=" + codice + ", data=" + data + ", ora=" + ora + "]";
+		return "Guida [codice=" + codice + ", data=" + data + ", ora=" + ora + ", elencoPrenotatiAttività="
+				+ elencoPrenotatiAttività + "]";
 	}
+
+	
 }
