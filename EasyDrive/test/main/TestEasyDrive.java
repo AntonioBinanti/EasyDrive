@@ -77,6 +77,26 @@ public class TestEasyDrive {
 	}
 	
 	@Test
+	public void testModificaCliente() {
+		try {
+			easyDrive.addCliente("AR202051", "Alessio", "Rossi", Date.valueOf("2000-1-1"), "0951616161", "Alessio.Rossi@gmail.com", 
+					"via Rossi 25");
+			assertNotNull(easyDrive.getCliente("AR202051"));
+			System.out.println("Vecchio cliente: " + easyDrive.getCliente("AR202051").toString());
+			easyDrive.modificaCliente("AR202051", "AR248963", "Alex", "Rosso", Date.valueOf("2001-1-1"), "0951616161", "Alex.Rosso@gmail.com", "via Rossi 25");
+			assertNull(easyDrive.getCliente("AR202051")); //codice fiscale vecchio
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessun cliente trovato con il codice fiscale selezionato");
+		}
+		try {
+			assertNotNull(easyDrive.getCliente("AR248963"));
+			System.out.println("Cliente modificato: " + easyDrive.getCliente("AR248963"));
+		}catch(Exception e) {
+			fail("Unexpected exception");
+		}
+	}
+	
+	@Test
 	public void testAddLezione() {
 		try {
 			ArrayList<Argomento> listaArgomenti = easyDrive.getListaArgomenti();
@@ -114,6 +134,26 @@ public class TestEasyDrive {
 			assertNotNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
 		}catch(Exception e) {
 			assertEquals(e.getMessage(),"Impossibile rimuovere la lezione con la data e l'ora selezionate");
+		}
+	}
+	
+	@Test
+	public void testModificaLezione() {
+		try {
+			easyDrive.addLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), easyDrive.getListaArgomenti().get(0));
+			
+			assertNotNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+			System.out.println("Vecchia lezione: " + easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+			easyDrive.modificaLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), LocalDate.of(2024, 4, 10), LocalTime.of(10, 00), easyDrive.getListaArgomenti().get(1));
+			assertNull(easyDrive.getLezione(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52))); //data e ora vecchie
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessuna lezione trovata con la data e ora selezionate");
+		}
+		try {
+			assertNotNull(easyDrive.getLezione(LocalDate.of(2024, 4, 10), LocalTime.of(10, 00)));
+			System.out.println("Lezione modificata: " + easyDrive.getLezione(LocalDate.of(2024, 4, 10), LocalTime.of(10, 00)));
+		}catch(Exception e) {
+			fail("Unexpected exception");
 		}
 	}
 	
@@ -245,6 +285,25 @@ public class TestEasyDrive {
 			assertNotNull(easyDrive.getAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
 		}catch(Exception e) {
 			assertEquals(e.getMessage(),"Impossibile rimuovere l'attività con la data e l'ora selezionate");
+		}
+	}
+	
+	@Test
+	public void testModificaAttività() {
+		try {
+			easyDrive.addEsameTeorico(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52));
+			assertNotNull(easyDrive.getAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+			System.out.println("Vecchia attività: " + easyDrive.getAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52)));
+			easyDrive.modificaAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52), LocalDate.of(2024, 10, 10), LocalTime.of(10, 00));
+			assertNull(easyDrive.getAttività(LocalDate.of(2023, 2, 28), LocalTime.of(20, 52))); //data e ora vecchie
+		}catch(Exception e) {
+			assertEquals(e.getMessage(),"Nessuna attività trovata con la data e ora selezionate");
+		}
+		try {
+			assertNotNull(easyDrive.getAttività(LocalDate.of(2024, 10, 10), LocalTime.of(10, 00)));
+			System.out.println("Attività modificata: " + easyDrive.getAttività(LocalDate.of(2024, 10, 10), LocalTime.of(10, 00)));
+		}catch(Exception e) {
+			fail("Unexpected exception");
 		}
 	}
 	

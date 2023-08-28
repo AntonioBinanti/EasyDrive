@@ -68,6 +68,24 @@ public class EasyDrive {
 		}
 	}
 	
+	public void modificaCliente(String vecchioCodiceFiscale, String codiceFiscale, String nome, String cognome, java.util.Date dataNascita, String numeroTelefono, String email, String indirizzo) throws Exception {
+		Cliente c = this.getCliente(vecchioCodiceFiscale);
+		c.setCodiceFiscale(codiceFiscale);
+		c.setNome(nome);
+		c.setCognome(cognome);
+		c.setDataNascita(dataNascita);
+		c.setNumeroTelefono(numeroTelefono);
+		c.setEmail(email);
+		c.setIndirizzo(indirizzo);
+		this.removeCliente(vecchioCodiceFiscale);
+		this.getListaClienti().put(codiceFiscale, c);
+		if(this.getCliente(codiceFiscale) != null) {
+			System.out.println("Cliente modificato correttamente");
+		}else {
+			throw new Exception("Impossibile modificare il cliente con il codice fiscale selezionato");
+		}	
+	}
+	
 	public void addLezione(LocalDate data, LocalTime ora, Argomento argomentoTrattato) {
 		Lezione l = new Lezione(data, ora, argomentoTrattato);
 		this.elencoLezioni.put(l.getCodice(), l);
@@ -93,6 +111,21 @@ public class EasyDrive {
 			//System.out.println("Impossibile rimuovere la lezione con la data e l'ora selezionate");
 			throw new Exception("Impossibile rimuovere la lezione con la data e l'ora selezionate");
 		}
+	}
+	
+	public void modificaLezione(LocalDate vecchiaData, LocalTime vecchiaOra, LocalDate data, LocalTime ora,Argomento argomento) throws Exception {
+		Lezione l = this.getLezione(vecchiaData, vecchiaOra);
+		l.setCodice(LocalDateTime.of(data, ora).toString());
+		l.setData(data);
+		l.setOra(ora);
+		l.setArgomentoTrattato(argomento);
+		this.removeLezione(vecchiaData, vecchiaOra);
+		this.getElencoLezioni().put(l.getCodice(), l);
+		if(this.getLezione(data, ora) != null) {
+			System.out.println("Lezione modificata correttamente");
+		}else {
+			throw new Exception("Impossibile modificare la lezione con la data e l'ora selezionate");
+		}	
 	}
 	
 	public void aggiornaFrequenzaClienti(LocalDate data, LocalTime ora){
@@ -142,6 +175,20 @@ public class EasyDrive {
 			//System.out.println("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 			throw new Exception("Impossibile rimuovere l'attività con la data e l'ora selezionate");
 		}
+	}
+	
+	public void modificaAttività(LocalDate vecchiaData, LocalTime vecchiaOra, LocalDate data, LocalTime ora) throws Exception {
+		Attività a = this.getAttività(vecchiaData, vecchiaOra);
+		a.setCodice(LocalDateTime.of(data, ora).toString());
+		a.setData(data);
+		a.setOra(ora);
+		this.removeAttività(vecchiaData, vecchiaOra);
+		this.getElencoAttività().put(a.getCodice(), a);
+		if(this.getAttività(data, ora) != null) {
+			System.out.println("Attività modificata correttamente");
+		}else {
+			throw new Exception("Impossibile modificare l'attività con la data e l'ora selezionate");
+		}	
 	}
 	
 	public ArrayList<EsameTeorico> prenotaEsameTeorico() throws Exception {
