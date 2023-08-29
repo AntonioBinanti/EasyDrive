@@ -45,7 +45,7 @@ public class Menù {
 				case 1:{ //Gestisci un cliente
 					int scelta2 = 0;
 					do {
-						System.out.println("\nGestisci cliente: \n1)Inserisci cliente \n2)Cerca cliente \n3)Rimuovi cliente \n0)Torna al menù");
+						System.out.println("\nGestisci cliente: \n1)Inserisci cliente \n2)Cerca cliente \n3)Rimuovi cliente \n4)Modifica cliente \n0)Torna al menù");
 						try {
 			                scelta2 = tastiera.nextInt();
 			            } catch (NumberFormatException n) {
@@ -59,7 +59,7 @@ public class Menù {
 						switch(scelta2) {
 							case 0:
 								break;
-							case 1: //Inserisci cliente 
+							case 1:{ //Inserisci cliente 
 								boolean corretto = true;
 								String codiceFiscale, nome, cognome, numeroTelefono, email, indirizzo;
 								Date dataNascita = null;
@@ -102,11 +102,11 @@ public class Menù {
 								easyDrive.addCliente(codiceFiscale, nome, cognome, dataNascita, cognome, email, indirizzo);
 								System.out.println("Il cliente " + nome + " " + cognome + " è stato inserito corretammente");
 								break;
-								
-							case 2: //Cerca cliente
+							}
+							case 2:{ //Cerca cliente
 								Cliente c;
 								System.out.println("Inserisci il codice fiscale del cliente da cercare (Premere '0' per tornare indietro)");
-								codiceFiscale = tastiera.next();
+								String codiceFiscale = tastiera.next();
 								if(codiceFiscale.equals("0")) {
 									break;
 								}else {
@@ -118,9 +118,10 @@ public class Menù {
 									}
 									break;
 								}
-							case 3: //Rimuovi cliente
+							}
+							case 3:{ //Rimuovi cliente
 								System.out.println("Inserisci il codice fiscale del cliente da rimuovere (Premere '0' per tornare indietro)");
-								codiceFiscale = tastiera.next();
+								String codiceFiscale = tastiera.next();
 								if(codiceFiscale.equals("0")){
 									break;
 								}else {
@@ -131,6 +132,62 @@ public class Menù {
 									}
 									break;
 								}
+							}
+							case 4:{ //Modifica cliente
+								boolean corretto = true;
+								String vecchioCodiceFiscale, codiceFiscale, nome, cognome, numeroTelefono, email, indirizzo;
+								Date dataNascita = null;
+								
+								System.out.println("Inserisci il codice fiscale del cliente da modificare (Premere '0' per tornare indietro)");
+								vecchioCodiceFiscale = tastiera.next();
+								if(vecchioCodiceFiscale.equals("0")) {
+									break;
+								}
+								System.out.println("Inserisci il nuovo codice fiscale del cliente");
+								codiceFiscale = tastiera.next();
+								System.out.println("Inserisci il nuovo nome del cliente");
+								nome = tastiera.next();
+								System.out.println("Inserisci il nuovo cognome del cliente");
+								cognome = tastiera.next();
+								do {
+									corretto = true;
+									System.out.println("Inserisci la nuova data di nascita del cliente (yyyy/mm/dd)");
+									String data = tastiera.next();
+									try {
+										dataNascita = dateFormat.parse(data);
+									} catch (ParseException e) {
+										//e.printStackTrace();
+										System.out.println("Data non valida, riprova");
+										corretto = false;
+									}
+								}while(!corretto);
+								do {
+									numeroTelefono = "";
+									try {
+										System.out.println("Inserisci il nuovo numero di telefono del cliente");
+										numeroTelefono = tastiera.next();
+										if(!numeroTelefono.matches("[0-9]+")) {
+											corretto = false ;
+											System.out.println("Numero di telefono non valido, riprova");
+										}else corretto = true;
+									}catch(PatternSyntaxException  e) {
+										System.out.println("Numero di telefono non valido, riprova");
+										corretto = false;
+									}
+								}while(!corretto);
+								System.out.println("Inserisci la nuova email del cliente");
+								email = tastiera.next();
+								System.out.println("Inserisci il nuovo indirizzo del cliente");
+								indirizzo = tastiera.next();
+								try {
+									easyDrive.modificaCliente(vecchioCodiceFiscale, codiceFiscale, nome, cognome, dataNascita, numeroTelefono, email, indirizzo);
+								} catch (Exception e) {
+									e.printStackTrace();
+									break;
+								}
+								System.out.println("Il cliente " + nome + " " + cognome + " è stato modificato corretammente");
+								break;
+						}
 						}
 					}while(scelta2 != 0);
 					break;
@@ -138,7 +195,7 @@ public class Menù {
 				case 2:{ //Gestisci un esame teorico
 					int scelta2 = 0;
 					do {
-						System.out.println("\nGestisci esame teorico: \n1)Inserisci esame teorico \n2)Cerca esame teorico \n3)Rimuovi esame teorico \n0)Torna al menù");
+						System.out.println("\nGestisci esame teorico: \n1)Inserisci esame teorico \n2)Cerca esame teorico \n3)Rimuovi esame teorico \n4)Modifica esame teorico \n0)Torna al menù");
 						try {
 			                scelta2 = tastiera.nextInt();
 			            } catch (NumberFormatException n) {
@@ -293,6 +350,90 @@ public class Menù {
 								easyDrive.removeAttività(localData, localOra);
 							} catch (Exception e) {
 								e.printStackTrace();
+							}
+							break;
+						}
+						case 4:{ //Modifica esame teorico
+							boolean corretto = true;
+							boolean exit = false;
+							String vecchiaData, vecchiaOra, data, ora;
+							LocalDate vecchiaLocalData = null;
+							LocalTime vecchiaLocalOra = null;
+							LocalDate localData = null;
+							LocalTime localOra = null;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la data dell'esame teorico da modificare (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								vecchiaData = tastiera.next();
+								if(vecchiaData.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalData = LocalDate.parse(vecchiaData, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci l'ora dell'esame teorico da modificare (HH:mm) (Premere 0 per tornare indietro)");
+								vecchiaOra = tastiera.next();
+								if(vecchiaOra.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalOra = LocalTime.parse(vecchiaOra);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova data dell'esame teorico (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								data = tastiera.next();
+								if(data.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localData = LocalDate.parse(data, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova ora dell'esame teorico (HH:mm) (Premere 0 per tornare indietro)");
+								ora = tastiera.next();
+								if(ora.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localOra = LocalTime.parse(ora);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							try {
+								easyDrive.modificaAttività(vecchiaLocalData, vecchiaLocalOra, localData, localOra);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
 							}
 							break;
 						}
@@ -487,7 +628,7 @@ public class Menù {
 				case 5:{ //Gestisci programmazione lezioni
 					int scelta2 = 0;
 					do {
-						System.out.println("\nGestisci lezione: \n1)Inserisci lezione \n2)Cerca lezione \n3)Rimuovi lezione \n0)Torna al menù");
+						System.out.println("\nGestisci lezione: \n1)Inserisci lezione \n2)Cerca lezione \n3)Rimuovi lezione \n4)Modifica lezione \n0)Torna al menù");
 						try {
 			                scelta2 = tastiera.nextInt();
 			            } catch (NumberFormatException n) {
@@ -702,6 +843,150 @@ public class Menù {
 							}
 							break;
 						}
+						case 4:{//Modifica lezione
+							boolean corretto = true;
+							boolean exit = false;
+							String vecchiaData, vecchiaOra, data, ora;
+							LocalDate vecchiaLocalData = null;
+							LocalTime vecchiaLocalOra = null;
+							LocalDate localData = null;
+							LocalTime localOra = null;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la data della lezione da modificare (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								vecchiaData = tastiera.next();
+								if(vecchiaData.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalData = LocalDate.parse(vecchiaData, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci l'ora della lezione da modificare (HH:mm) (Premere 0 per tornare indietro)");
+								vecchiaOra = tastiera.next();
+								if(vecchiaOra.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalOra = LocalTime.parse(vecchiaOra);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova data della lezione (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								data = tastiera.next();
+								if(data.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localData = LocalDate.parse(data, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova ora della lezione (HH:mm) (Premere 0 per tornare indietro)");
+								ora = tastiera.next();
+								if(ora.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localOra = LocalTime.parse(vecchiaOra);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							int scelta3 = 0;
+							Argomento a = null;
+							System.out.println("Seleziona un numero per scegliere il nuovo argomento da trattare nella lezione:");
+							System.out.println("1)Segnali di pericolo\n2)Segnali di divieto\n3)Segnali di obbligo\n4)Segnali di precedenza"
+									+ "\n5)Semafori\n6)Distanza di sicurezza\n7)Norme di circolazione dei veicoli\n8)Precedenza negli incroci"
+									+ "\n9)Norme di sorpasso\n10)Cinture di sicurezza e altri dispositivi\n0)Annulla operazione");
+							try {
+				                scelta3 = tastiera.nextInt();
+				            } catch (NumberFormatException n) {
+				                scelta3 = 0;
+				            } catch (Exception e) {
+				                System.out.println(e);
+				                System.out.println("Chiusura programma...");
+				                scelta = 0;
+				            }
+							switch(scelta3) {
+							case 0:{
+								break;
+							}
+							case 1:{
+								a = easyDrive.getListaArgomenti().get(0);
+								break;
+							}
+							case 2:{
+								a = easyDrive.getListaArgomenti().get(1);
+								break;
+							}
+							case 3:{
+								a = easyDrive.getListaArgomenti().get(2);
+								break;
+							}
+							case 4:{
+								a = easyDrive.getListaArgomenti().get(3);
+								break;
+							}
+							case 5:{
+								a = easyDrive.getListaArgomenti().get(4);
+								break;
+							}
+							case 6:{
+								a = easyDrive.getListaArgomenti().get(5);
+								break;
+							}
+							case 7:{
+								a = easyDrive.getListaArgomenti().get(6);
+								break;
+							}
+							case 8:{
+								a = easyDrive.getListaArgomenti().get(7);
+								break;
+							}
+							case 9:{
+								a = easyDrive.getListaArgomenti().get(8);
+								break;
+							}
+							case 10:{
+								a = easyDrive.getListaArgomenti().get(9);
+								break;
+							}
+							}
+							try {
+								easyDrive.modificaLezione(vecchiaLocalData, vecchiaLocalOra, localData, localOra, a);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
+							}
+							break;
+						}
 						}
 					}while(scelta2 != 0);
 					break;
@@ -772,7 +1057,7 @@ public class Menù {
 				case 7:{ //Gestisci programmazione guide
 					int scelta2 = 0;
 					do {
-						System.out.println("\nGestisci guide: \n1)Inserisci guida \n2)Cerca guida \n3)Rimuovi guida \n0)Torna al menù");
+						System.out.println("\nGestisci guide: \n1)Inserisci guida \n2)Cerca guida \n3)Rimuovi guida \n4)Modifica guida \n0)Torna al menù");
 						try {
 			                scelta2 = tastiera.nextInt();
 			            } catch (NumberFormatException n) {
@@ -929,6 +1214,91 @@ public class Menù {
 								e.printStackTrace();
 							}
 							break;
+						}
+						case 4:{ //Modifica guida
+							boolean corretto = true;
+							boolean exit = false;
+							String vecchiaData, vecchiaOra, data, ora;
+							LocalDate vecchiaLocalData = null;
+							LocalTime vecchiaLocalOra = null;
+							LocalDate localData = null;
+							LocalTime localOra = null;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la data della guida da modificare (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								vecchiaData = tastiera.next();
+								if(vecchiaData.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalData = LocalDate.parse(vecchiaData, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci l'ora della guida da modificare (HH:mm) (Premere 0 per tornare indietro)");
+								vecchiaOra = tastiera.next();
+								if(vecchiaOra.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalOra = LocalTime.parse(vecchiaOra);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova data della guida (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								data = tastiera.next();
+								if(data.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localData = LocalDate.parse(data, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova ora della guida (HH:mm) (Premere 0 per tornare indietro)");
+								ora = tastiera.next();
+								if(ora.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localOra = LocalTime.parse(ora);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							try {
+								easyDrive.modificaAttività(vecchiaLocalData, vecchiaLocalOra, localData, localOra);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
+							}
+							break;
+						
 						}
 						}
 					}while(scelta2 != 0);
@@ -1275,7 +1645,7 @@ public class Menù {
 				case 12:{ //Gestisci un esame finale
 					int scelta2 = 0;
 					do {
-						System.out.println("\nGestisci esame finale: \n1)Inserisci esame finale \n2)Cerca esame finale \n3)Rimuovi esame finale \n0)Torna al menù");
+						System.out.println("\nGestisci esame finale: \n1)Inserisci esame finale \n2)Cerca esame finale \n3)Rimuovi esame finale \n4)Modifica esame finale \n0)Torna al menù");
 						try {
 			                scelta2 = tastiera.nextInt();
 			            } catch (NumberFormatException n) {
@@ -1430,6 +1800,90 @@ public class Menù {
 								easyDrive.removeAttività(localData, localOra);
 							} catch (Exception e) {
 								e.printStackTrace();
+							}
+							break;
+						}
+						case 4:{//Modifica esame finale
+							boolean corretto = true;
+							boolean exit = false;
+							String vecchiaData, vecchiaOra, data, ora;
+							LocalDate vecchiaLocalData = null;
+							LocalTime vecchiaLocalOra = null;
+							LocalDate localData = null;
+							LocalTime localOra = null;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la data dell'esame finale da modificare (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								vecchiaData = tastiera.next();
+								if(vecchiaData.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalData = LocalDate.parse(vecchiaData, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci l'ora dell'esame finale da modificare (HH:mm) (Premere 0 per tornare indietro)");
+								vecchiaOra = tastiera.next();
+								if(vecchiaOra.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									vecchiaLocalOra = LocalTime.parse(vecchiaOra);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova data dell'esame finale (yyyy/MM/dd) (Premere 0 per tornare indietro)");
+								data = tastiera.next();
+								if(data.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localData = LocalDate.parse(data, localDateFormat);
+								} catch (DateTimeParseException e) {
+									System.out.println("Data non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							do {
+								corretto = true;
+								exit = false;
+								System.out.println("Inserisci la nuova ora dell'esame finale (HH:mm) (Premere 0 per tornare indietro)");
+								ora = tastiera.next();
+								if(ora.equals("0")) {
+									exit = true;
+									break;
+								}
+								try {
+									localOra = LocalTime.parse(ora);
+								} catch (DateTimeParseException  e) {
+									System.out.println("Ora non valida, riprova");
+									corretto = false;
+								}
+							}while(!corretto);
+							if(exit == true) break;
+							try {
+								easyDrive.modificaAttività(vecchiaLocalData, vecchiaLocalOra, localData, localOra);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
 							}
 							break;
 						}
